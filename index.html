@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <title>Konguta Rahvamaja - Infoekraan</title>
+    <!-- QR koodi raamatukogu -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --must: #000;
+            --paneel-bg: rgba(20, 20, 20, 0.95);
+            --kollane: #ffcc00;
+            --valge: #ffffff;
+            --tekst-hall: #aaaaaa;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background-color: var(--must);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: var(--valge);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Põhiraamistik */
+        #pearaam {
+            display: flex;
+            width: 100%;
+            flex: 1;
+            margin-top: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* VASAK PANEEL: Teated */
+        #vasak-paneel {
+            flex: 2.2;
+            background-color: var(--paneel-bg);
+            border-right: 2px solid #333;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* KESKMINE PANEEL: Kuulutus */
+        #kesk-paneel {
+            flex: 5.6;
+            position: relative;
+            background-color: var(--paneel-bg); /* Ühtlane taustavärv pildialas */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* PAREM PANEEL: Kell ja QR */
+        #parem-paneel {
+            flex: 2.2;
+            background-color: var(--paneel-bg);
+            border-left: 3px solid var(--kollane);
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            box-sizing: border-box;
+            text-align: right;
+        }
+
+        .slaid {
+            position: absolute;
+            width: 100%; height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .slaid.aktiivne { opacity: 1; }
+
+        /* Edenemisriba */
+        #progress-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+
+        #progress-bar {
+            height: 100%;
+            background: var(--kollane);
+            width: 0%;
+        }
+
+        .animate-progress {
+            animation: progress-load 20s linear infinite;
+        }
+
+        @keyframes progress-load {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        #kella-kast {
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        #kell { font-size: 3.5rem; font-weight: 800; line-height: 1; margin: 0; }
+        #kuupaev { font-size: 1.1rem; color: var(--kollane); margin-top: 8px; font-weight: bold; text-transform: capitalize; }
+        #ilm { font-size: 1.2rem; color: var(--tekst-hall); margin-top: 10px; }
+
+        .silt {
+            font-size: 0.9rem;
+            color: var(--kollane);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: block;
+            z-index: 5;
+        }
+        
+        #teated-viewport {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        #teate-sisu {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            color: #eeeeee;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            transform: translateY(0);
+            transition: none;
+        }
+
+        @keyframes scroll-sync {
+            0% { transform: translateY(0); }
+            10% { transform: translateY(0); }
+            90% { transform: translateY(var(--scroll-dist)); }
+            100% { transform: translateY(var(--scroll-dist)); }
+        }
+
+        #qr-kast {
+            margin-top: auto;
+            background: #fff;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            align-self: flex-end;
+            width: fit-content;
+        }
+        #qrcode { display: flex; justify-content: center; margin-bottom: 5px; }
+        #qr-kast span { color: #000; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+
+        #uudisteriba {
+            width: 100%; 
+            height: 60px;
+            background: rgba(0,0,0,0.95);
+            z-index: 20;
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex; 
+            align-items: center;
+            border-top: 3px solid var(--kollane);
+            flex-shrink: 0;
+        }
+
+        #jooksev-tekst {
+            display: inline-block;
+            padding-left: 100%;
+            animation: veeremine 45s linear infinite;
+            font-size: 1.5rem; 
+            font-weight: 600;
+        }
+
+        @keyframes veeremine {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        #staatus { position: absolute; top: 10px; left: 10px; font-size: 0.7rem; color: #1a1a1a; z-index: 100; }
+    </style>
+</head>
+<body>
+
+<div id="staatus">Andmete laadimine...</div>
+
+<div id="pearaam">
+    <div id="vasak-paneel">
+        <span class="silt">Teadete tahvel</span>
+        <div id="teated-viewport">
+            <div id="teate-sisu">Laadin sisu...</div>
+        </div>
+    </div>
+
+    <div id="kesk-paneel">
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+    </div>
+
+    <div id="parem-paneel">
+        <div id="kella-kast">
+            <div id="kell">00:00</div>
+            <div id="kuupaev">...</div>
+            <div id="ilm"><span id="temp">--</span>°C • Konguta</div>
+        </div>
+
+        <div id="qr-kast">
+            <div id="qrcode"></div>
+            <span>Osta pilet</span>
+        </div>
+    </div>
+</div>
+
+<div id="uudisteriba">
+    <div id="jooksev-tekst">Tere tulemast Konguta rahvamajja!</div>
+</div>
+
+<script>
+    var csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbA6FpGTiHQfx9QW-0zSTRMvCH8QZGXAJ-uR_bbNRFFQeFXXeCoNi-6urAu-utmRcNs2D_Gb91W0MZ/pub?output=csv";
+    
+    var images = [], sidebarItems = [], tickerItems = [], qrLinks = [];
+    var currentIndex = 0;
+    var slideDuration = 20000; 
+    var qrGenerator = new QRCode(document.getElementById("qrcode"), { 
+        width: 140, 
+        height: 140,
+        correctLevel : QRCode.CorrectLevel.H // Kõrgeim veaparandus skaneerimise parandamiseks
+    });
+
+    function startClock() {
+        function tick() {
+            var n = new Date();
+            var hh = String(n.getHours()).padStart(2, '0');
+            var mm = String(n.getMinutes()).padStart(2, '0');
+            document.getElementById('kell').innerHTML = hh + ":" + mm;
+            document.getElementById('kuupaev').innerHTML = n.toLocaleDateString('et-EE', {weekday:'long', day:'numeric', month:'long'});
+        }
+        tick(); setInterval(tick, 1000);
+    }
+
+    function fetchWeather() {
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=58.24&longitude=26.29&current_weather=true')
+            .then(r => r.json()).then(d => {
+                document.getElementById('temp').innerHTML = Math.round(d.current_weather.temperature);
+            }).catch(e => {});
+    }
+
+    function fixLink(u) {
+        if (!u) return ""; u = u.replace(/"/g, '').trim();
+        if (u.indexOf('drive.google.com') !== -1) {
+            var id = (u.indexOf('id=') !== -1) ? u.split('id=')[1].split('&')[0] : u.split('/d/')[1].split('/')[0];
+            return "https://lh3.googleusercontent.com/d/" + id;
+        }
+        return u;
+    }
+
+    function loadData() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", csvUrl + "&cache=" + new Date().getTime(), true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var rows = xhr.responseText.split(/\r?\n/);
+                var nImg = [], nSide = [], nTick = [], nQr = [];
+
+                for (var i = 0; i < rows.length; i++) {
+                    var cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    if (cols[0] && cols[0].indexOf('http') !== -1) {
+                        nImg.push(fixLink(cols[0]));
+                        nSide.push(cols[1] ? cols[1].replace(/"/g, '').trim() : "");
+                        nTick.push(cols[2] ? cols[2].replace(/"/g, '').trim() : "");
+                        nQr.push(cols[3] ? cols[3].replace(/"/g, '').trim() : "");
+                    }
+                }
+
+                if (nImg.length > 0) {
+                    images = nImg; sidebarItems = nSide; tickerItems = nTick; qrLinks = nQr;
+                    renderSlides();
+                    updateUI(0);
+                    var fullTicker = tickerItems.filter(x => x.length > 0).join('  •  ');
+                    if (fullTicker) document.getElementById('jooksev-tekst').innerHTML = fullTicker;
+                    document.getElementById('staatus').style.display = 'none';
+                }
+            }
+        };
+        xhr.send();
+    }
+
+    function renderSlides() {
+        var container = document.getElementById('kesk-paneel');
+        var progressContainer = document.getElementById('progress-container');
+        container.innerHTML = '';
+        container.appendChild(progressContainer);
+
+        for (var i = 0; i < images.length; i++) {
+            var d = document.createElement('div');
+            d.className = 'slaid' + (i === 0 ? ' aktiivne' : '');
+            d.style.backgroundImage = "url('" + images[i] + "')";
+            container.appendChild(d);
+        }
+
+        if (images.length > 1) {
+            document.getElementById('progress-bar').classList.add('animate-progress');
+            if (window.loop) clearInterval(window.loop);
+            window.loop = setInterval(nextSlide, slideDuration);
+        } else {
+            document.getElementById('progress-container').style.display = 'none';
+        }
+    }
+
+    function nextSlide() {
+        var s = document.getElementsByClassName('slaid');
+        if (s.length <= 1) return;
+        
+        var bar = document.getElementById('progress-bar');
+        bar.classList.remove('animate-progress');
+        void bar.offsetWidth; 
+        bar.classList.add('animate-progress');
+
+        s[currentIndex].className = 'slaid';
+        currentIndex = (currentIndex + 1) % s.length;
+        s[currentIndex].className = 'slaid aktiivne';
+        updateUI(currentIndex);
+    }
+
+    function updateUI(idx) {
+        var displayTeade = sidebarItems[idx] || sidebarItems[0] || "Tere tulemast Konguta rahvamajja!";
+        var content = document.getElementById('teate-sisu');
+        var viewport = document.getElementById('teated-viewport');
+        
+        content.innerHTML = displayTeade;
+        content.style.animation = 'none';
+        content.style.transform = 'translateY(0)';
+        
+        requestAnimationFrame(function() {
+            var scrollHeight = content.scrollHeight;
+            var viewHeight = viewport.offsetHeight;
+
+            if (scrollHeight > viewHeight) {
+                var scrollDist = -(scrollHeight - viewHeight);
+                content.style.setProperty('--scroll-dist', scrollDist + 'px');
+                content.style.animation = "scroll-sync 20s linear forwards";
+            }
+        });
+        
+        // --- QR LOOGIKA PARANDUS ---
+        var defaultTicketLink = "https://piletikeskus.ee/et/o/kongutarahvamaja";
+        
+        // Võtame lingi tabelist: eelistame praeguse rea linki, kui see on tühi, siis esimese rea linki.
+        var rawLink = qrLinks[idx] || qrLinks[0];
+        
+        // Puhastame lingi igasugusest mürast (jutumärgid, tühikud jm)
+        var finalLink = (rawLink && rawLink.length > 10) ? rawLink.replace(/["']/g, "").trim() : defaultTicketLink;
+        
+        // Kui link on endiselt Drive-link (mis teleris ei tööta piletina), kasutame vaikimisi linki
+        if (finalLink.indexOf('drive.google.com') !== -1) {
+            finalLink = defaultTicketLink;
+        }
+
+        var qrKast = document.getElementById('qr-kast');
+        if (finalLink && finalLink.startsWith('http')) {
+            qrGenerator.clear(); 
+            qrGenerator.makeCode(finalLink);
+            qrKast.style.display = 'block';
+        } else {
+            qrKast.style.display = 'none';
+        }
+    }
+
+    setInterval(function() {
+        if (images.length === 0) location.reload();
+    }, 120000);
+
+    window.onload = function() {
+        startClock();
+        fetchWeather(); setInterval(fetchWeather, 1800000);
+        loadData();
+        setTimeout(function() { location.reload(); }, 1800000);
+    };
+</script>
+
+</body>
+</html>
