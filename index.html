@@ -2,397 +2,384 @@
 <html lang="et">
 <head>
     <meta charset="UTF-8">
-    <title>Konguta Rahvamaja - Infoekraan</title>
-    <!-- QR koodi raamatukogu -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konguta Rahvamaja Infoekraan</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --must: #000;
-            --paneel-bg: rgba(20, 20, 20, 0.95);
-            --kollane: #ffcc00;
-            --valge: #ffffff;
-            --tekst-hall: #aaaaaa;
+            --aktsent: #ffcc00; 
+            --tekst-tume: #000000;
+            --tekst-hele: #ffffff;
+            --klaas-bg: rgba(255, 255, 255, 0.92);
+            --slide-duration: 20000ms;
+            --riba-korgus: 45px;
         }
 
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
             overflow: hidden;
-            background-color: var(--must);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: var(--valge);
-            display: flex;
-            flex-direction: column;
+            font-family: 'Inter', sans-serif;
+            color: var(--tekst-tume);
+            background: #f0f2f5;
         }
 
-        /* Põhiraamistik */
+        #taust {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(-45deg, #e3f2fd, #fce4ec, #f1f8e9, #fff9c4);
+            background-size: 400% 400%;
+            animation: gradient-flow 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         #pearaam {
             display: flex;
             width: 100%;
-            flex: 1;
-            margin-top: 0;
+            height: calc(100% - var(--riba-korgus));
+            padding: 20px;
             box-sizing: border-box;
-            overflow: hidden;
+            gap: 20px;
         }
 
-        /* VASAK PANEEL: Teated */
-        #vasak-paneel {
-            flex: 2.2;
-            background-color: var(--paneel-bg);
-            border-right: 2px solid #333;
+        .klaas-paneel {
+            background: var(--klaas-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
-            padding: 25px;
-            box-sizing: border-box;
             overflow: hidden;
         }
 
-        /* KESKMINE PANEEL: Kuulutus */
-        #kesk-paneel {
-            flex: 5.6;
+        /* --- VASAK PANEEL (Uus struktuur) --- */
+        #vasak-paneel { 
+            flex: 2.8; 
+            padding: 30px; 
+            background: #ffffff;
+            border-left: 8px solid var(--aktsent);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .silt {
+            font-size: 0.9rem; color: #666;
+            text-transform: uppercase; letter-spacing: 2px;
+            font-weight: 900; margin-bottom: 15px; display: block;
+        }
+
+        /* 1. Ülemine staatiline info (B-veerg) */
+        #meta-info {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        #meta-tekst {
+            font-size: 1.4rem;
+            line-height: 1.3;
+            font-weight: 800; /* Paks kiri */
+            color: #000;
+            white-space: pre-wrap;
+        }
+
+        /* 2. Alumine keriv info (C-veerg) */
+        #sisu-konteiner {
+            flex-grow: 1;
+            overflow: hidden;
             position: relative;
-            background-color: var(--paneel-bg); /* Ühtlane taustavärv pildialas */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            /* Hajutus all ääres */
+            -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+        }
+        #sisu-tekst {
+            font-size: 1.3rem; /* Suurem kiri */
+            line-height: 1.5;
+            font-weight: 500;
+            color: #333;
+            position: absolute;
+            top: 0; width: 100%;
+            transition: transform linear;
         }
 
-        /* PAREM PANEEL: Kell ja QR */
-        #parem-paneel {
-            flex: 2.2;
-            background-color: var(--paneel-bg);
-            border-left: 3px solid var(--kollane);
-            display: flex;
-            flex-direction: column;
-            padding: 25px;
-            box-sizing: border-box;
-            text-align: right;
+        /* KESK PANEEL */
+        #kesk-paneel { flex: 5; position: relative; background: rgba(255, 255, 255, 0.3); }
+        
+        /* PAREM PANEEL */
+        #parem-paneel { flex: 2.2; padding: 25px; text-align: right; }
+
+        #progress-raam {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 8px;
+            background: rgba(0,0,0,0.05); z-index: 10;
         }
+        #progress-riba {
+            height: 100%; width: 0%; background: var(--aktsent); transition: width linear;
+        }
+
+        #kella-box { border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 15px; margin-bottom: 20px; }
+        #kell { font-size: 3.8rem; font-weight: 800; line-height: 1; color: #000; letter-spacing: -2px; }
+        #kuupaev { font-size: 1.2rem; color: #333; margin-top: 5px; font-weight: 600; }
 
         .slaid {
-            position: absolute;
-            width: 100%; height: 100%;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+            opacity: 0; transition: opacity 1s ease-in-out;
+            background-size: contain; background-repeat: no-repeat; background-position: center;
+            z-index: 1;
         }
         .slaid.aktiivne { opacity: 1; }
 
-        /* Edenemisriba */
-        #progress-container {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            z-index: 10;
+        #qr-box {
+            margin-top: auto; background: #fff; padding: 15px;
+            border-radius: 20px; display: none; align-self: flex-end;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; z-index: 10;
         }
+        #qrcode { margin-bottom: 8px; display: flex; justify-content: center; }
+        #qr-box span { font-size: 0.75rem; font-weight: 800; color: #000; text-transform: uppercase; }
 
-        #progress-bar {
-            height: 100%;
-            background: var(--kollane);
-            width: 0%;
+        /* ALUMINE UUDISTERIBA */
+        #alumine-riba {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: var(--riba-korgus);
+            background: #fff; display: flex; align-items: center; overflow: hidden;
+            border-top: 1px solid #ddd; z-index: 20;
         }
-
-        .animate-progress {
-            animation: progress-load 20s linear infinite;
-        }
-
-        @keyframes progress-load {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-
-        #kella-kast {
-            border-bottom: 1px solid #333;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-        #kell { font-size: 3.5rem; font-weight: 800; line-height: 1; margin: 0; }
-        #kuupaev { font-size: 1.1rem; color: var(--kollane); margin-top: 8px; font-weight: bold; text-transform: capitalize; }
-        #ilm { font-size: 1.2rem; color: var(--tekst-hall); margin-top: 10px; }
-
-        .silt {
-            font-size: 0.9rem;
-            color: var(--kollane);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            display: block;
-            z-index: 5;
-        }
-        
-        #teated-viewport {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        #teate-sisu {
-            font-size: 1.3rem;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            color: #eeeeee;
-            position: absolute;
-            top: 0;
-            width: 100%;
-            transform: translateY(0);
-            transition: none;
-        }
-
-        @keyframes scroll-sync {
-            0% { transform: translateY(0); }
-            10% { transform: translateY(0); }
-            90% { transform: translateY(var(--scroll-dist)); }
-            100% { transform: translateY(var(--scroll-dist)); }
-        }
-
-        #qr-kast {
-            margin-top: auto;
-            background: #fff;
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            display: none;
-            align-self: flex-end;
-            width: fit-content;
-        }
-        #qrcode { display: flex; justify-content: center; margin-bottom: 5px; }
-        #qr-kast span { color: #000; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
-
-        #uudisteriba {
-            width: 100%; 
-            height: 60px;
-            background: rgba(0,0,0,0.95);
-            z-index: 20;
-            overflow: hidden;
-            white-space: nowrap;
-            display: flex; 
-            align-items: center;
-            border-top: 3px solid var(--kollane);
-            flex-shrink: 0;
-        }
-
         #jooksev-tekst {
-            display: inline-block;
-            padding-left: 100%;
-            animation: veeremine 45s linear infinite;
-            font-size: 1.5rem; 
-            font-weight: 600;
+            white-space: nowrap; padding-left: 100%; 
+            animation: veeremine 20s linear infinite; 
+            font-size: 1.15rem; font-weight: 600; color: #333;
         }
-
-        @keyframes veeremine {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
-        #staatus { position: absolute; top: 10px; left: 10px; font-size: 0.7rem; color: #1a1a1a; z-index: 100; }
+        @keyframes veeremine { from { transform: translateX(0); } to { transform: translateX(-100%); } }
     </style>
 </head>
 <body>
 
-<div id="staatus">Andmete laadimine...</div>
+<div id="taust"></div>
 
 <div id="pearaam">
-    <div id="vasak-paneel">
-        <span class="silt">Teadete tahvel</span>
-        <div id="teated-viewport">
-            <div id="teate-sisu">Laadin sisu...</div>
+    <!-- VASAK: Kaks tsooni -->
+    <div id="vasak-paneel" class="klaas-paneel">
+        <span class="silt">INFO</span>
+        
+        <!-- Ülemine: Veerg B (Staatiline) -->
+        <div id="meta-info">
+            <div id="meta-tekst">Laadin...</div>
+        </div>
+
+        <!-- Alumine: Veerg C (Keriv) -->
+        <span class="silt">KIRJELDUS</span>
+        <div id="sisu-konteiner">
+            <div id="sisu-tekst">Andmete laadimine...</div>
         </div>
     </div>
 
-    <div id="kesk-paneel">
-        <div id="progress-container">
-            <div id="progress-bar"></div>
-        </div>
+    <!-- KESK: Pilt (Veerg A) -->
+    <div id="kesk-paneel" class="klaas-paneel">
+        <div id="progress-raam"><div id="progress-riba"></div></div>
     </div>
 
-    <div id="parem-paneel">
-        <div id="kella-kast">
+    <!-- PAREM: Kell ja QR (Veerg E) -->
+    <div id="parem-paneel" class="klaas-paneel">
+        <div id="kella-box">
             <div id="kell">00:00</div>
             <div id="kuupaev">...</div>
-            <div id="ilm"><span id="temp">--</span>°C • Konguta</div>
+            <div id="ilm">Konguta • <span id="temp">--</span>°C</div>
         </div>
-
-        <div id="qr-kast">
+        <div id="qr-box">
             <div id="qrcode"></div>
-            <span>Osta pilet</span>
+            <span>Loe lähemalt</span>
         </div>
     </div>
 </div>
 
-<div id="uudisteriba">
+<div id="alumine-riba">
     <div id="jooksev-tekst">Tere tulemast Konguta rahvamajja!</div>
 </div>
 
 <script>
-    var csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbA6FpGTiHQfx9QW-0zSTRMvCH8QZGXAJ-uR_bbNRFFQeFXXeCoNi-6urAu-utmRcNs2D_Gb91W0MZ/pub?output=csv";
-    
-    var images = [], sidebarItems = [], tickerItems = [], qrLinks = [];
-    var currentIndex = 0;
-    var slideDuration = 20000; 
-    var qrGenerator = new QRCode(document.getElementById("qrcode"), { 
-        width: 140, 
-        height: 140,
-        correctLevel : QRCode.CorrectLevel.H // Kõrgeim veaparandus skaneerimise parandamiseks
-    });
+    window.onerror = function(msg, url, line) { console.log("Viga: " + msg); return true; };
 
-    function startClock() {
-        function tick() {
-            var n = new Date();
-            var hh = String(n.getHours()).padStart(2, '0');
-            var mm = String(n.getMinutes()).padStart(2, '0');
-            document.getElementById('kell').innerHTML = hh + ":" + mm;
-            document.getElementById('kuupaev').innerHTML = n.toLocaleDateString('et-EE', {weekday:'long', day:'numeric', month:'long'});
-        }
-        tick(); setInterval(tick, 1000);
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbA6FpGTiHQfx9QW-0zSTRMvCH8QZGXAJ-uR_bbNRFFQeFXXeCoNi-6urAu-utmRcNs2D_Gb91W0MZ/pub?output=csv";
+    
+    let images = [], metaInfo = [], descInfo = [], tickers = [], qrs = [], currentIdx = 0;
+    const slideTime = 20000; // 20 sekundit
+    let qrGen = null;
+
+    function initQR() {
+        try {
+            const el = document.getElementById("qrcode");
+            if (typeof QRCode !== 'undefined' && el) {
+                qrGen = new QRCode(el, { width: 130, height: 130, colorDark: "#000000", colorLight: "#ffffff" });
+            }
+        } catch (e) {}
+    }
+
+    function updateTime() {
+        try {
+            const n = new Date();
+            document.getElementById('kell').innerText = n.toLocaleTimeString('et-EE', {hour:'2-digit', minute:'2-digit'});
+            document.getElementById('kuupaev').innerText = n.toLocaleDateString('et-EE', {weekday:'long', day:'numeric', month:'long'});
+        } catch(e) {}
     }
 
     function fetchWeather() {
         fetch('https://api.open-meteo.com/v1/forecast?latitude=58.24&longitude=26.29&current_weather=true')
-            .then(r => r.json()).then(d => {
-                document.getElementById('temp').innerHTML = Math.round(d.current_weather.temperature);
-            }).catch(e => {});
+        .then(r => r.json()).then(d => {
+            document.getElementById('temp').innerText = Math.round(d.current_weather.temperature);
+        }).catch(() => {});
     }
 
     function fixLink(u) {
         if (!u) return ""; u = u.replace(/"/g, '').trim();
-        if (u.indexOf('drive.google.com') !== -1) {
-            var id = (u.indexOf('id=') !== -1) ? u.split('id=')[1].split('&')[0] : u.split('/d/')[1].split('/')[0];
+        if (u.includes('drive.google.com')) {
+            const id = u.includes('id=') ? u.split('id=')[1].split('&')[0] : u.split('/d/')[1].split('/')[0];
             return "https://lh3.googleusercontent.com/d/" + id;
         }
         return u;
     }
 
     function loadData() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", csvUrl + "&cache=" + new Date().getTime(), true);
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", csvUrl + "&cache=" + Date.now(), true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                var rows = xhr.responseText.split(/\r?\n/);
-                var nImg = [], nSide = [], nTick = [], nQr = [];
+                try {
+                    const rows = xhr.responseText.split(/\r?\n/);
+                    const _i=[], _m=[], _d=[], _q=[], _t=[];
+                    
+                    for (let i = 0; i < rows.length; i++) {
+                        const c = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                        if (c.length >= 2) {
+                            const imgLink = c[0] && c[0].includes('http') ? fixLink(c[0]) : "";
+                            
+                            // VEERG B -> Ülemine staatiline info (Aeg/Koht)
+                            const textMeta = c[1] ? c[1].replace(/"/g, '').trim() : "";
+                            
+                            // VEERG C -> Alumine keriv sisu (Kirjeldus)
+                            const textDesc = c[2] ? c[2].replace(/"/g, '').trim() : "";
+                            
+                            // VEERG D -> Alumine uudisteriba
+                            const textTicker = c[3] ? c[3].replace(/"/g, '').trim() : "";
 
-                for (var i = 0; i < rows.length; i++) {
-                    var cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    if (cols[0] && cols[0].indexOf('http') !== -1) {
-                        nImg.push(fixLink(cols[0]));
-                        nSide.push(cols[1] ? cols[1].replace(/"/g, '').trim() : "");
-                        nTick.push(cols[2] ? cols[2].replace(/"/g, '').trim() : "");
-                        nQr.push(cols[3] ? cols[3].replace(/"/g, '').trim() : "");
+                            // VEERG E -> QR kood
+                            const textQr = c[4] ? c[4].replace(/"/g, '').trim() : "";
+                            
+                            if (imgLink || textMeta.length > 1) {
+                                _i.push(imgLink);
+                                _m.push(textMeta);
+                                _d.push(textDesc);
+                                _t.push(textTicker);
+                                _q.push(textQr);
+                            }
+                        }
                     }
-                }
-
-                if (nImg.length > 0) {
-                    images = nImg; sidebarItems = nSide; tickerItems = nTick; qrLinks = nQr;
-                    renderSlides();
-                    updateUI(0);
-                    var fullTicker = tickerItems.filter(x => x.length > 0).join('  •  ');
-                    if (fullTicker) document.getElementById('jooksev-tekst').innerHTML = fullTicker;
-                    document.getElementById('staatus').style.display = 'none';
-                }
+                    
+                    if (_i.length > 0) {
+                        images = _i; metaInfo = _m; descInfo = _d; qrs = _q; tickers = _t;
+                        initSlides();
+                        updateDisplay(0);
+                        
+                        // Uudisteriba (võtab D veerust)
+                        const generalTicker = tickers.filter(x => x && x.length > 2).join('  •  ');
+                        document.getElementById('jooksev-tekst').innerText = generalTicker || "Tere tulemast Konguta rahvamajja! Jälgi meie sündmusi ka Facebookis.";
+                    }
+                } catch (e) { console.log(e); }
             }
         };
         xhr.send();
     }
 
-    function renderSlides() {
-        var container = document.getElementById('kesk-paneel');
-        var progressContainer = document.getElementById('progress-container');
-        container.innerHTML = '';
-        container.appendChild(progressContainer);
+    function initSlides() {
+        const cont = document.getElementById('kesk-paneel');
+        const oldSlides = document.querySelectorAll('.slaid');
+        oldSlides.forEach(el => el.remove());
 
-        for (var i = 0; i < images.length; i++) {
-            var d = document.createElement('div');
+        images.forEach((src, i) => {
+            const d = document.createElement('div');
             d.className = 'slaid' + (i === 0 ? ' aktiivne' : '');
-            d.style.backgroundImage = "url('" + images[i] + "')";
-            container.appendChild(d);
-        }
-
-        if (images.length > 1) {
-            document.getElementById('progress-bar').classList.add('animate-progress');
-            if (window.loop) clearInterval(window.loop);
-            window.loop = setInterval(nextSlide, slideDuration);
-        } else {
-            document.getElementById('progress-container').style.display = 'none';
-        }
-    }
-
-    function nextSlide() {
-        var s = document.getElementsByClassName('slaid');
-        if (s.length <= 1) return;
-        
-        var bar = document.getElementById('progress-bar');
-        bar.classList.remove('animate-progress');
-        void bar.offsetWidth; 
-        bar.classList.add('animate-progress');
-
-        s[currentIndex].className = 'slaid';
-        currentIndex = (currentIndex + 1) % s.length;
-        s[currentIndex].className = 'slaid aktiivne';
-        updateUI(currentIndex);
-    }
-
-    function updateUI(idx) {
-        var displayTeade = sidebarItems[idx] || sidebarItems[0] || "Tere tulemast Konguta rahvamajja!";
-        var content = document.getElementById('teate-sisu');
-        var viewport = document.getElementById('teated-viewport');
-        
-        content.innerHTML = displayTeade;
-        content.style.animation = 'none';
-        content.style.transform = 'translateY(0)';
-        
-        requestAnimationFrame(function() {
-            var scrollHeight = content.scrollHeight;
-            var viewHeight = viewport.offsetHeight;
-
-            if (scrollHeight > viewHeight) {
-                var scrollDist = -(scrollHeight - viewHeight);
-                content.style.setProperty('--scroll-dist', scrollDist + 'px');
-                content.style.animation = "scroll-sync 20s linear forwards";
+            if (src) {
+                d.style.backgroundImage = `url('${src}')`;
+            } else {
+                d.style.backgroundColor = 'rgba(255,255,255,0.1)'; 
             }
+            cont.appendChild(d);
         });
+
+        if (window.timer) clearInterval(window.timer);
+        window.timer = setInterval(() => {
+            if (images.length > 0) {
+                currentIdx = (currentIdx + 1) % images.length;
+                const slides = document.querySelectorAll('.slaid');
+                slides.forEach((s, i) => s.className = 'slaid' + (i === currentIdx ? ' aktiivne' : ''));
+                updateDisplay(currentIdx);
+            }
+        }, slideTime);
+    }
+
+    function updateDisplay(idx) {
+        // 1. Ülemine staatiline tekst (Veerg B)
+        document.getElementById('meta-tekst').innerText = metaInfo[idx] || "Info puudub";
+
+        // 2. Alumine keriv tekst (Veerg C)
+        const tBox = document.getElementById('sisu-tekst');
+        tBox.innerText = descInfo[idx] || "";
         
-        // --- QR LOOGIKA PARANDUS ---
-        var defaultTicketLink = "https://piletikeskus.ee/et/o/kongutarahvamaja";
+        tBox.style.transition = 'none';
+        tBox.style.transform = 'translateY(0)';
         
-        // Võtame lingi tabelist: eelistame praeguse rea linki, kui see on tühi, siis esimese rea linki.
-        var rawLink = qrLinks[idx] || qrLinks[0];
-        
-        // Puhastame lingi igasugusest mürast (jutumärgid, tühikud jm)
-        var finalLink = (rawLink && rawLink.length > 10) ? rawLink.replace(/["']/g, "").trim() : defaultTicketLink;
-        
-        // Kui link on endiselt Drive-link (mis teleris ei tööta piletina), kasutame vaikimisi linki
-        if (finalLink.indexOf('drive.google.com') !== -1) {
-            finalLink = defaultTicketLink;
+        setTimeout(() => {
+            const hC = document.getElementById('sisu-konteiner').offsetHeight;
+            const hT = tBox.scrollHeight;
+            if (hT > hC) {
+                // Algab 2s, kerib 15s, jääb 3s lõppu.
+                setTimeout(() => {
+                    tBox.style.transition = `transform 15000ms linear`;
+                    tBox.style.transform = `translateY(-${hT - hC + 10}px)`;
+                }, 2000);
+            }
+        }, 100);
+
+        // 3. QR Kood (Veerg E)
+        const link = qrs[idx];
+        const qrBox = document.getElementById('qr-box');
+        if (qrBox) {
+            if (qrGen && link && (link.includes('http') || link.includes('.'))) {
+                try {
+                    qrGen.clear();
+                    const finalLink = link.startsWith('http') ? link : 'https://' + link;
+                    qrGen.makeCode(finalLink);
+                    qrBox.style.display = 'block';
+                } catch(e) { qrBox.style.display = 'none'; }
+            } else {
+                qrBox.style.display = 'none';
+            }
         }
 
-        var qrKast = document.getElementById('qr-kast');
-        if (finalLink && finalLink.startsWith('http')) {
-            qrGenerator.clear(); 
-            qrGenerator.makeCode(finalLink);
-            qrKast.style.display = 'block';
-        } else {
-            qrKast.style.display = 'none';
+        // 4. Progressiriba
+        const bar = document.getElementById('progress-riba');
+        if (bar) {
+            bar.style.transition = 'none';
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.transition = `width ${slideTime}ms linear`;
+                bar.style.width = '100%';
+            }, 50);
         }
     }
 
-    setInterval(function() {
-        if (images.length === 0) location.reload();
-    }, 120000);
-
-    window.onload = function() {
-        startClock();
+    window.onload = () => {
+        initQR();
+        updateTime(); setInterval(updateTime, 1000);
         fetchWeather(); setInterval(fetchWeather, 1800000);
         loadData();
-        setTimeout(function() { location.reload(); }, 1800000);
+        setInterval(loadData, 300000);
+        setTimeout(() => location.reload(), 3600000);
     };
 </script>
-
 </body>
 </html>
