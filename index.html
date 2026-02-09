@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="et">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="referrer" content="no-referrer">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
   <title>Konguta Rahvamaja Infoekraan</title>
 
   <!-- Välised teegid -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
@@ -16,15 +16,24 @@
       --aktsent: #ffcc00;
       --tekst-tume: #1a1a1a;
       --tekst-hall: #555;
-      --paneel-bg: rgba(255, 255, 255, 0.95);
+      --paneel-bg: rgba(255, 255, 255, 0.86);
       --taust: #f0f2f5;
       --riba-korgus: 45px;
-      --vari: 0 4px 20px rgba(0,0,0,0.08);
+      --vari: 0 10px 35px rgba(0,0,0,0.10);
+    }
+
+    :root[data-theme="dark"] {
+      --taust: #0b0f14;
+      --paneel-bg: rgba(20, 26, 33, 0.72);
+      --tekst-tume: #eef2f6;
+      --tekst-hall: #b8c0cc;
     }
 
     body, html {
-      margin: 0; padding: 0;
-      width: 100%; height: 100%;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
       font-family: 'Inter', sans-serif;
       color: var(--tekst-tume);
@@ -32,9 +41,18 @@
     }
 
     #taust {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
       background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
       z-index: -1;
+    }
+
+    :root[data-theme="dark"] #taust {
+      background: radial-gradient(1000px 600px at 20% 10%, rgba(255,204,0,0.10), transparent 60%),
+                  radial-gradient(800px 500px at 80% 30%, rgba(255,255,255,0.06), transparent 55%),
+                  linear-gradient(135deg, #0b0f14 0%, #111a24 100%);
     }
 
     #pearaam {
@@ -57,20 +75,33 @@
       overflow: hidden;
     }
 
-    /* VASAK PANEEL: Info ja Kirjeldus */
+    :root[data-theme="dark"] .klaas-paneel {
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    /* VASAK */
     #vasak-paneel {
-      flex: 2.6; 
+      flex: 2.6;
       padding: 25px;
       border-left: 6px solid var(--aktsent);
     }
 
     .silt {
-      font-size: 0.7rem; 
+      font-size: 0.7rem;
       color: #777;
-      text-transform: uppercase; letter-spacing: 2px;
-      font-weight: 700; margin-bottom: 8px; display: block;
-      border-bottom: 1px solid #ddd; padding-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: block;
+      border-bottom: 1px solid rgba(0,0,0,0.10);
+      padding-bottom: 4px;
       flex-shrink: 0;
+    }
+
+    :root[data-theme="dark"] .silt {
+      color: rgba(255,255,255,0.60);
+      border-bottom: 1px solid rgba(255,255,255,0.10);
     }
 
     #meta-info {
@@ -78,11 +109,12 @@
       padding-bottom: 10px;
       flex-shrink: 0;
     }
+
     #meta-tekst {
-      font-size: 1.1rem;
-      line-height: 1.3;
-      font-weight: 700;
-      color: #000;
+      font-size: 1.15rem;
+      line-height: 1.25;
+      font-weight: 800;
+      color: var(--tekst-tume);
       white-space: pre-wrap;
     }
 
@@ -90,33 +122,40 @@
       flex-grow: 1;
       overflow: hidden;
       position: relative;
-      /* Hajutus all ääres */
       -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
       mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
     }
+
     #sisu-tekst {
-      font-size: 0.95rem;
-      line-height: 1.5;
+      font-size: 1.02rem;
+      line-height: 1.65;
       font-weight: 400;
-      color: #333;
+      color: var(--tekst-hall);
       position: absolute;
-      top: 0; width: 100%;
+      top: 0;
+      width: 100%;
       transition: transform linear;
       white-space: pre-wrap;
     }
 
-    /* KESKMINE PANEEL: Pilt */
+    /* KESK */
     #kesk-paneel {
-      flex: 5.4; 
+      flex: 5.4;
       position: relative;
-      background: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.35);
       border-radius: 16px;
+    }
+
+    :root[data-theme="dark"] #kesk-paneel {
+      background: rgba(255, 255, 255, 0.06);
     }
 
     .slaid {
       position: absolute;
-      width: 100%; height: 100%;
-      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
       opacity: 0;
       transition: opacity 1s ease-in-out;
       z-index: 1;
@@ -126,48 +165,95 @@
       padding: 10px;
       box-sizing: border-box;
     }
+
     .slaid.aktiivne { opacity: 1; }
 
     .slaid img {
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       display: block;
-      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+      filter: drop-shadow(0 5px 15px rgba(0,0,0,0.12));
+    }
+
+    .slaid.aktiivne img {
+      animation: kenburns 20s linear both;
+    }
+
+    @keyframes kenburns {
+      from { transform: scale(1.00); }
+      to { transform: scale(1.05); }
     }
 
     #progress-raam {
-      position: absolute; bottom: 0; left: 0; width: 100%; height: 4px;
-      background: rgba(0,0,0,0.05); z-index: 10;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(0,0,0,0.05);
+      z-index: 10;
     }
+
+    :root[data-theme="dark"] #progress-raam {
+      background: rgba(255,255,255,0.08);
+    }
+
     #progress-riba {
-      height: 100%; width: 0%;
+      height: 100%;
+      width: 0%;
       background: var(--aktsent);
       transition: width linear;
     }
 
-    /* PAREM PANEEL: Kell ja QR */
+    /* PAREM */
     #parem-paneel {
-      flex: 2; 
+      flex: 2;
       padding: 20px;
       text-align: right;
     }
 
     #kella-kast {
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
       padding-bottom: 15px;
       margin-bottom: 15px;
     }
-    #kell { 
-      font-size: 3rem; 
-      font-weight: 800; line-height: 1; margin: 0; 
-      color: #000; letter-spacing: -1px; 
+
+    :root[data-theme="dark"] #kella-kast {
+      border-bottom: 1px solid rgba(255,255,255,0.10);
     }
-    #kuupaev { 
-      font-size: 0.9rem; color: #444; margin-top: 5px; 
-      font-weight: 600; text-transform: capitalize; 
+
+    #kell {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+      margin: 0;
+      color: var(--tekst-tume);
+      letter-spacing: -1px;
     }
-    #ilm { 
-      font-size: 1.1rem; color: #333; margin-top: 8px; font-weight: 500; 
+
+    #kuupaev {
+      font-size: 0.9rem;
+      color: var(--tekst-hall);
+      margin-top: 5px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    #ilm {
+      font-size: 1.1rem;
+      color: var(--tekst-hall);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    #status {
+      font-size: 0.75rem;
+      color: var(--tekst-hall);
+      margin-top: 10px;
+      font-weight: 600;
+      text-align: right;
+      opacity: 0.9;
     }
 
     #qr-box {
@@ -180,70 +266,125 @@
       box-shadow: 0 5px 20px rgba(0,0,0,0.08);
       text-align: center;
       z-index: 10;
-      border: 1px solid #eee;
+      border: 1px solid rgba(0,0,0,0.06);
     }
-    #qrcode { margin-bottom: 5px; display: flex; justify-content: center; }
-    #qr-box span { font-size: 0.65rem; font-weight: 800; color: #000; text-transform: uppercase; }
 
-    /* ALUMINE UUDISTERIBA */
+    :root[data-theme="dark"] #qr-box {
+      background: rgba(20, 26, 33, 0.92);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    #qrcode {
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #qr-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--tekst-tume);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ALUMINE */
     #alumine-riba {
-      position: absolute; bottom: 0; left: 0; width: 100%; height: var(--riba-korgus);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: var(--riba-korgus);
       background: #fff;
-      display: flex; align-items: center; overflow: hidden;
-      border-top: 1px solid #ddd; z-index: 20;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      border-top: 1px solid rgba(0,0,0,0.10);
+      z-index: 20;
       box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     }
-    #jooksev-tekst {
-      white-space: nowrap; padding-left: 100%;
-      animation: veeremine 90s linear infinite; 
-      font-size: 1.1rem; 
-      font-weight: 600; color: #222;
-    }
-    @keyframes veeremine { from { transform: translateX(0); } to { transform: translateX(-100%); } }
-    
-    #veateade {
-        position: absolute; top: 10px; left: 10px; padding: 5px 10px; 
-        background: red; color: white; border-radius: 5px; font-size: 12px; 
-        z-index: 9999; display: none;
+
+    :root[data-theme="dark"] #alumine-riba {
+      background: rgba(20, 26, 33, 0.92);
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
 
-    /* HELI START NUPP */
+    #jooksev-tekst {
+      white-space: nowrap;
+      padding-left: 100%;
+      animation: veeremine 90s linear infinite;
+      font-size: 1.1rem;
+      font-weight: 650;
+      color: var(--tekst-tume);
+      letter-spacing: -0.2px;
+    }
+
+    @keyframes veeremine {
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
+    }
+
+    /* HELI OVERLAY */
     #heli-overlay {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.6); z-index: 999;
-        display: none; align-items: center; justify-content: center;
-        flex-direction: column; cursor: pointer;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      cursor: pointer;
     }
+
     #heli-teade {
-        background: white; padding: 20px 40px; border-radius: 15px;
-        text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        border: 2px solid var(--aktsent);
+      background: white;
+      padding: 20px 40px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border: 2px solid var(--aktsent);
+      max-width: 520px;
     }
-    #heli-teade h2 { margin: 0; font-size: 1.5rem; color: #000; }
-    #heli-teade p { margin: 10px 0 0; color: #555; }
+
+    :root[data-theme="dark"] #heli-teade {
+      background: rgba(20, 26, 33, 0.98);
+      color: var(--tekst-tume);
+      border: 2px solid var(--aktsent);
+    }
+
+    #heli-teade h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: var(--tekst-tume);
+    }
+
+    #heli-teade p {
+      margin: 10px 0 0;
+      color: var(--tekst-hall);
+      font-weight: 600;
+    }
   </style>
 </head>
 
 <body>
   <div id="taust"></div>
-  <div id="veateade"></div>
 
-  <!-- INTERNETI RAADIO STRIIM -->
-  <!-- Panin 'preload="none"', et see ei blokiks lehe laadimist -->
-  <audio id="taustamuusika" loop preload="none">
-      <source src="https://stream.zeno.fm/0r0xa792kwzuv" type="audio/mpeg">
-  </audio>
+  <!-- AUDIO -->
+  <audio id="taustamuusika" loop preload="none"></audio>
 
-  <!-- Heli käivitamise nupp/kiht -->
   <div id="heli-overlay" onclick="startAudio()">
-      <div id="heli-teade">
-          <h2>🎵 Muusika</h2>
-          <p>Vajuta <b>OK</b> või klõpsa siia heli käivitamiseks</p>
-      </div>
+    <div id="heli-teade">
+      <h2>Muusika</h2>
+      <p>Klõpsa siia heli käivitamiseks</p>
+    </div>
   </div>
 
   <div id="pearaam">
-    <!-- VASAK: Veerg B (Info) ja C (Kirjeldus) -->
+    <!-- VASAK -->
     <div id="vasak-paneel" class="klaas-paneel">
       <span class="silt">INFO</span>
       <div id="meta-info">
@@ -256,281 +397,618 @@
       </div>
     </div>
 
-    <!-- KESK: Pilt (Veerg A) -->
+    <!-- KESK -->
     <div id="kesk-paneel" class="klaas-paneel">
       <div id="progress-raam"><div id="progress-riba"></div></div>
     </div>
 
-    <!-- PAREM: Kell ja QR (Veerg E) -->
+    <!-- PAREM -->
     <div id="parem-paneel" class="klaas-paneel">
       <div id="kella-kast">
         <div id="kell">00:00</div>
         <div id="kuupaev">...</div>
         <div id="ilm">Konguta • <span id="temp">--</span>°C</div>
+        <div id="status"></div>
       </div>
 
       <div id="qr-box">
         <div id="qrcode"></div>
-        <span>OSTA PILET</span>
+        <div id="qr-label">OSTA PILET</div>
       </div>
     </div>
   </div>
 
-  <!-- ALUMINE: Veerg D -->
+  <!-- ALUMINE -->
   <div id="alumine-riba">
     <div id="jooksev-tekst">Tere tulemast Konguta rahvamajja!</div>
   </div>
 
   <script>
-    window.onerror = function(msg, url, line) {
-      console.error("Viga:", msg);
-      return true; // Hoiab ära veateate ekraanil
+    // -------------------------
+    // KONFIGURATSIOON (SINU SHEET)
+    // -------------------------
+    const SHEET_ID = "15G1MVQSYJK1EHSXBpRIJEq85-BjsrEvpZDK9XSQa3OI";
+    const SLIDES_GID = "0";
+    const SETTINGS_GID = "873044695";
+
+    const slidesCsvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SLIDES_GID}`;
+    const settingsCsvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SETTINGS_GID}`;
+
+    const CACHE_KEY = "krm_screen_cache_v2";
+    const DEFAULT_TICKER_S = 90;
+    const DEFAULT_SLIDE_MS = 20000;
+
+    let slides = [];
+    let currentIdx = 0;
+    let qrGen = null;
+    let timer = null;
+
+    let globalSettings = {
+      theme: "auto",
+      layout: "standard",
+      tickerSpeed: DEFAULT_TICKER_S,
+      defaultSlideMs: DEFAULT_SLIDE_MS,
+      darkFrom: "18:00",
+      darkTo: "08:00",
+      audioEnabled: true,
+      audioUrl: "",
+      audioVolume: 0.15
     };
 
-    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbA6FpGTiHQfx9QW-0zSTRMvCH8QZGXAJ-uR_bbNRFFQeFXXeCoNi-6urAu-utmRcNs2D_Gb91W0MZ/pub?output=csv";
+    let audioState = {
+      enabled: true,
+      url: "",
+      volume: 0.15,
+      startedByUser: false
+    };
 
-    let images = [], metaInfo = [], descInfo = [], tickers = [], qrs = [], currentIdx = 0;
-    const slideTime = 20000;
-    let qrGen = null;
-
-    function initSystem() {
-        startClock();
-        fetchWeather();
-        initQR();
-        
-        // Proovime muusikat, aga ei lase sellel takistada muud
-        setTimeout(initAudio, 2000); 
-        
-        loadData();
-        
-        setInterval(updateTime, 1000);
-        setInterval(fetchWeather, 1800000);
-        setInterval(loadData, 300000);
-        
-        setTimeout(() => location.reload(), 7200000);
+    function parseBool(v, defVal = true) {
+      if (v === true) return true;
+      if (v === false) return false;
+      if (v === undefined || v === null || v === "") return defVal;
+      const s = String(v).trim().toLowerCase();
+      if (["false", "0", "no", "ei", "off"].includes(s)) return false;
+      if (["true", "1", "yes", "jah", "on"].includes(s)) return true;
+      return defVal;
     }
 
-    // --- HELI ---
-    function initAudio() {
-        const audio = document.getElementById('taustamuusika');
-        if(!audio) return;
-        audio.volume = 0.15; 
-        
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.then(_ => {
-                console.log("Muusika mängib");
-            }).catch(error => {
-                // Kui autoplay on keelatud, näita nuppu
-                document.getElementById('heli-overlay').style.display = 'flex';
-            });
-        }
+    function clamp01(x, defVal = 0.15) {
+      const n = Number(x);
+      if (!Number.isFinite(n)) return defVal;
+      return Math.min(1, Math.max(0, n));
     }
 
-    function startAudio() {
-        const audio = document.getElementById('taustamuusika');
-        if(audio) audio.play();
-        document.getElementById('heli-overlay').style.display = 'none';
+    function parseDateMaybe(v) {
+      if (!v) return null;
+      const s = String(v).trim();
+      const d = new Date(s.replace(" ", "T"));
+      return isNaN(d.getTime()) ? null : d;
     }
-    
-    document.addEventListener('keydown', function(event) {
-        if (document.getElementById('heli-overlay').style.display === 'flex') {
-            startAudio();
-        }
-    });
-    // ------------
 
-    function initQR() {
+    function inWindow(now, start, end) {
+      if (start && now < start) return false;
+      if (end && now > end) return false;
+      return true;
+    }
+
+    function cacheSave(payload) {
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify(payload)); } catch(e) {}
+    }
+
+    function cacheLoad() {
       try {
-        const el = document.getElementById("qrcode");
-        if (typeof QRCode !== 'undefined' && el) {
-          qrGen = new QRCode(el, { width: 110, height: 110, colorDark: "#000000", colorLight: "#ffffff" });
-        }
-      } catch (e) {}
-    }
-
-    function startClock() {
-        updateTime();
-    }
-
-    function updateTime() {
-      try {
-        const n = new Date();
-        const kellEl = document.getElementById('kell');
-        if (kellEl) kellEl.innerText = n.toLocaleTimeString('et-EE', {hour:'2-digit', minute:'2-digit'});
-        
-        const kpEl = document.getElementById('kuupaev');
-        if (kpEl) kpEl.innerText = n.toLocaleDateString('et-EE', {weekday:'long', day:'numeric', month:'long'});
-      } catch(e) {}
-    }
-
-    function fetchWeather() {
-      fetch('https://api.open-meteo.com/v1/forecast?latitude=58.24&longitude=26.29&current_weather=true')
-        .then(r => r.json())
-        .then(d => {
-          if(d && d.current_weather) {
-            document.getElementById('temp').innerText = Math.round(d.current_weather.temperature);
-          }
-        }).catch(() => {});
+        const raw = localStorage.getItem(CACHE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch(e) { return null; }
     }
 
     function fixLink(u) {
       if (!u) return "";
-      u = u.replace(/"/g, '').trim(); 
-      if (u.includes('drive.google.com')) {
+      u = u.replace(/"/g, "").trim();
+      if (u.includes("drive.google.com")) {
         let id = "";
-        if (u.includes('id=')) id = u.split('id=')[1].split('&')[0];
-        else if (u.includes('/d/')) id = u.split('/d/')[1].split('/')[0];
-        if (id) return "https://lh3.googleusercontent.com/d/" + id;
+        if (u.includes("id=")) id = u.split("id=")[1].split("&")[0];
+        else if (u.includes("/d/")) id = u.split("/d/")[1].split("/")[0];
+        if (id) return "https://drive.google.com/uc?export=view&id=" + id;
       }
       return u;
     }
 
-    function loadData() {
-        if (typeof Papa === 'undefined') {
-            // Varuplaan: Kui PapaParse ei lae, proovi näidisandmetega
-            console.error("PapaParse puudub, laen varuandmed");
-            loadMockData();
-            return;
+    function setStatus(txt) {
+      const el = document.getElementById("status");
+      if (el) el.innerText = txt;
+    }
+
+    function markUpdated(source) {
+      const n = new Date();
+      const hhmm = n.toLocaleTimeString("et-EE", { hour: "2-digit", minute: "2-digit" });
+      setStatus(`Uuendatud: ${hhmm} • ${slides.length} slaidi • ${source}`);
+    }
+
+    function applyLayout(mode) {
+      const m = (mode || "standard").toLowerCase();
+      const left = document.getElementById("vasak-paneel");
+      const mid = document.getElementById("kesk-paneel");
+      const right = document.getElementById("parem-paneel");
+      if (!left || !mid || !right) return;
+
+      if (m === "pilt") {
+        left.style.flex = "2.1";
+        mid.style.flex = "6.0";
+        right.style.flex = "1.9";
+        return;
+      }
+      if (m === "tekst") {
+        left.style.flex = "3.2";
+        mid.style.flex = "4.8";
+        right.style.flex = "2.0";
+        return;
+      }
+      left.style.flex = "2.6";
+      mid.style.flex = "5.4";
+      right.style.flex = "2.0";
+    }
+
+    function timeToMinutes(hhmm) {
+      const s = String(hhmm || "").trim();
+      const parts = s.split(":");
+      if (parts.length !== 2) return null;
+      const h = Number(parts[0]);
+      const m = Number(parts[1]);
+      if (!Number.isFinite(h) || !Number.isFinite(m)) return null;
+      return h * 60 + m;
+    }
+
+    function isInAutoDarkWindow(now, fromHHMM, toHHMM) {
+      const from = timeToMinutes(fromHHMM);
+      const to = timeToMinutes(toHHMM);
+      if (from === null || to === null) return false;
+
+      const cur = now.getHours() * 60 + now.getMinutes();
+      if (from < to) return cur >= from && cur < to;
+      return cur >= from || cur < to;
+    }
+
+    function applyTheme(mode) {
+      const m = (mode || "auto").toLowerCase();
+      const now = new Date();
+
+      let useDark = false;
+      if (m === "tume") useDark = true;
+      if (m === "hele") useDark = false;
+      if (m === "auto") {
+        useDark = isInAutoDarkWindow(now, globalSettings.darkFrom, globalSettings.darkTo);
+      }
+
+      if (useDark) document.documentElement.setAttribute("data-theme", "dark");
+      else document.documentElement.removeAttribute("data-theme");
+    }
+
+    function setTickerSpeed(seconds) {
+      const t = document.getElementById("jooksev-tekst");
+      if (!t) return;
+      const s = Math.max(20, Number(seconds) || DEFAULT_TICKER_S);
+      t.style.animation = "none";
+      t.offsetHeight;
+      t.style.animation = `veeremine ${s}s linear infinite`;
+    }
+
+    // AUDIO
+    function tryStartAudio() {
+      const audio = document.getElementById("taustamuusika");
+      if (!audio) return;
+      if (!audioState.enabled) return;
+
+      audio.volume = audioState.volume;
+
+      const p = audio.play();
+      if (p && typeof p.then === "function") {
+        p.then(() => {
+          const ov = document.getElementById("heli-overlay");
+          if (ov) ov.style.display = "none";
+        }).catch(() => {
+          const ov = document.getElementById("heli-overlay");
+          if (ov) ov.style.display = "flex";
+        });
+      }
+    }
+
+    function applyAudioSettings() {
+      const audio = document.getElementById("taustamuusika");
+      if (!audio) return;
+
+      audio.volume = audioState.volume;
+
+      if (!audioState.enabled) {
+        try { audio.pause(); } catch(e) {}
+        const ov = document.getElementById("heli-overlay");
+        if (ov) ov.style.display = "none";
+        return;
+      }
+
+      if (!audioState.url) return;
+
+      const current = audio.getAttribute("data-src") || "";
+      if (current !== audioState.url) {
+        audio.setAttribute("data-src", audioState.url);
+        try { audio.pause(); } catch(e) {}
+        audio.src = audioState.url;
+        audio.load();
+      }
+
+      tryStartAudio();
+    }
+
+    function startAudio() {
+      audioState.startedByUser = true;
+      tryStartAudio();
+      const ov = document.getElementById("heli-overlay");
+      if (ov) ov.style.display = "none";
+    }
+
+    document.addEventListener("keydown", function() {
+      const ov = document.getElementById("heli-overlay");
+      if (ov && ov.style.display === "flex") startAudio();
+    });
+
+    // KELL + ILM
+    function updateTime() {
+      const n = new Date();
+      const kellEl = document.getElementById("kell");
+      const kpEl = document.getElementById("kuupaev");
+      if (kellEl) kellEl.innerText = n.toLocaleTimeString("et-EE", { hour: "2-digit", minute: "2-digit" });
+      if (kpEl) kpEl.innerText = n.toLocaleDateString("et-EE", { weekday: "long", day: "numeric", month: "long" });
+    }
+
+    function fetchWeather() {
+      fetch("https://api.open-meteo.com/v1/forecast?latitude=58.24&longitude=26.29&current_weather=true", { cache: "no-store" })
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(d => {
+          const t = d && d.current_weather ? d.current_weather.temperature : null;
+          const el = document.getElementById("temp");
+          if (el) el.innerText = Number.isFinite(t) ? Math.round(t) : "--";
+        })
+        .catch(() => {
+          const el = document.getElementById("temp");
+          if (el) el.innerText = "--";
+        });
+    }
+
+    // QR
+    function initQR() {
+      try {
+        const el = document.getElementById("qrcode");
+        if (!el) return;
+        el.innerHTML = "";
+        if (typeof QRCode !== "undefined") {
+          qrGen = new QRCode(el, { width: 110, height: 110, colorDark: "#000000", colorLight: "#ffffff" });
         }
+      } catch(e) {}
+    }
 
-        Papa.parse(csvUrl + "&t=" + Date.now(), {
-            download: true,
-            header: false,
-            skipEmptyLines: true,
-            complete: function(results) {
-                const rows = results.data;
-                const _i=[], _m=[], _d=[], _t=[], _q=[];
+    // SETTINGS
+    function applySettingsFromRows(rows) {
+      const map = {};
+      for (const r of rows || []) {
+        const k = (r[0] || "").toString().trim();
+        const v = (r[1] || "").toString().trim();
+        if (k) map[k] = v;
+      }
 
-                for (let i = 0; i < rows.length; i++) {
-                    const cols = rows[i];
-                    if (cols.length >= 1) {
-                        const imgLink = (cols[0] && cols[0].includes('http')) ? fixLink(cols[0]) : "";
-                        if (!imgLink) continue;
+      globalSettings.theme = (map.theme || globalSettings.theme).trim();
+      globalSettings.layout = (map.layout || globalSettings.layout).trim();
+      globalSettings.tickerSpeed = Number(map.ticker_speed) || globalSettings.tickerSpeed;
 
-                        _i.push(imgLink);
-                        _m.push(cols[1] ? cols[1].trim() : "");
-                        _d.push(cols[2] ? cols[2].trim() : "");
-                        _t.push(cols[3] ? cols[3].trim() : "");
-                        _q.push(cols[4] ? cols[4].trim() : "");
-                    }
-                }
+      const defS = Number(map.default_duration_s);
+      if (Number.isFinite(defS) && defS > 0) globalSettings.defaultSlideMs = Math.max(5000, defS * 1000);
 
-                if (_i.length > 0) {
-                    if (images.length === 0 || JSON.stringify(images) !== JSON.stringify(_i)) {
-                        images = _i; metaInfo = _m; descInfo = _d; tickers = _t; qrs = _q;
-                        initSlides();
-                        updateDisplay(0);
-                    }
-                } else {
-                    // Kui tabel tühi, lae mock
-                    loadMockData();
-                }
-            },
-            error: function(err) {
-                console.error("CSV viga", err);
-                loadMockData();
-            }
+      globalSettings.darkFrom = (map.dark_from || globalSettings.darkFrom).trim();
+      globalSettings.darkTo = (map.dark_to || globalSettings.darkTo).trim();
+
+      globalSettings.audioEnabled = parseBool(map.audio_enabled, true);
+      globalSettings.audioUrl = (map.audio_url || globalSettings.audioUrl || "").trim();
+      globalSettings.audioVolume = clamp01(map.audio_volume, globalSettings.audioVolume);
+
+      applyLayout(globalSettings.layout);
+      applyTheme(globalSettings.theme);
+      setTickerSpeed(globalSettings.tickerSpeed);
+
+      audioState.enabled = globalSettings.audioEnabled;
+      audioState.url = globalSettings.audioUrl;
+      audioState.volume = globalSettings.audioVolume;
+      applyAudioSettings();
+    }
+
+    function loadSettings(done) {
+      if (typeof Papa === "undefined") return done();
+
+      Papa.parse(settingsCsvUrl + "&t=" + Date.now(), {
+        download: true,
+        header: false,
+        skipEmptyLines: true,
+        complete: (res) => {
+          applySettingsFromRows(res.data);
+          done();
+        },
+        error: () => done()
+      });
+    }
+
+    // SLIDES
+    function buildSlidesFromRows(rows) {
+      const now = new Date();
+      const next = [];
+
+      for (let i = 0; i < (rows || []).length; i++) {
+        const c = rows[i];
+        if (!c || c.length < 1) continue;
+
+        const first = (c[0] || "").toString().trim().toUpperCase();
+        if (first === "IMG" || first === "PILT") continue;
+
+        const imgRaw = (c[0] || "").toString().trim();
+        const imgLink = imgRaw.includes("http") ? fixLink(imgRaw) : "";
+        if (!imgLink) continue;
+
+        const meta = (c[1] || "").toString().trim();
+        const desc = (c[2] || "").toString().trim();
+        const ticker = (c[3] || "").toString().trim();
+        const qr = (c[4] || "").toString().trim();
+
+        const kestusS = Number(c[5]) || 0;
+        const aktiivne = c.length >= 7 ? parseBool(c[6], true) : true;
+
+        const start = c.length >= 8 ? parseDateMaybe(c[7]) : null;
+        const end = c.length >= 9 ? parseDateMaybe(c[8]) : null;
+
+        const qrLabel = c.length >= 10 ? (c[9] || "").toString().trim() : "";
+
+        if (!aktiivne) continue;
+        if (!inWindow(now, start, end)) continue;
+
+        next.push({
+          img: imgLink,
+          meta,
+          desc,
+          ticker,
+          qr,
+          qrLabel,
+          ms: kestusS > 0 ? Math.max(5000, kestusS * 1000) : globalSettings.defaultSlideMs
         });
+      }
+
+      return next;
     }
 
-    // VARUPLAAN (et ekraan ei oleks tühi)
-    function loadMockData() {
-        images = [""]; 
-        metaInfo = ["Andmete laadimine..."];
-        descInfo = ["Kontrollin ühendust Google Sheetsiga..."];
-        tickers = ["Palun kontrolli internetiühendust."];
-        qrs = [""];
-        initSlides();
-        updateDisplay(0);
+    function loadSlides() {
+      if (typeof Papa === "undefined") {
+        const cached = cacheLoad();
+        if (cached && cached.slides && cached.slides.length) {
+          slides = cached.slides;
+          initSlides();
+          updateDisplay(0);
+          markUpdated("Offline");
+          return;
+        }
+        loadMockData();
+        return;
+      }
+
+      Papa.parse(slidesCsvUrl + "&t=" + Date.now(), {
+        download: true,
+        header: false,
+        skipEmptyLines: true,
+        complete: (res) => {
+          const nextSlides = buildSlidesFromRows(res.data);
+
+          if (nextSlides.length) {
+            const oldSig = JSON.stringify(slides.map(s => ({ img: s.img, meta: s.meta, desc: s.desc, ticker: s.ticker, qr: s.qr, ms: s.ms, qrLabel: s.qrLabel })));
+            const newSig = JSON.stringify(nextSlides.map(s => ({ img: s.img, meta: s.meta, desc: s.desc, ticker: s.ticker, qr: s.qr, ms: s.ms, qrLabel: s.qrLabel })));
+
+            slides = nextSlides;
+            cacheSave({ slides, settings: globalSettings, savedAt: Date.now() });
+
+            if (oldSig !== newSig) {
+              initSlides();
+              updateDisplay(0);
+            } else {
+              updateDisplay(currentIdx);
+            }
+
+            markUpdated("Online");
+            return;
+          }
+
+          const cached = cacheLoad();
+          if (cached && cached.slides && cached.slides.length) {
+            slides = cached.slides;
+            initSlides();
+            updateDisplay(0);
+            markUpdated("Offline");
+            return;
+          }
+          loadMockData();
+        },
+        error: () => {
+          const cached = cacheLoad();
+          if (cached && cached.slides && cached.slides.length) {
+            slides = cached.slides;
+            initSlides();
+            updateDisplay(0);
+            markUpdated("Offline");
+            return;
+          }
+          loadMockData();
+        }
+      });
     }
 
+    function loadAll() {
+      loadSettings(() => loadSlides());
+    }
+
+    // RENDER + TIMER
     function initSlides() {
-        const cont = document.getElementById('kesk-paneel');
-        const oldSlides = document.querySelectorAll('.slaid');
-        oldSlides.forEach(el => el.remove());
-        const prog = document.getElementById('progress-raam');
+      const cont = document.getElementById("kesk-paneel");
+      const old = document.querySelectorAll(".slaid");
+      old.forEach(el => el.remove());
 
-        images.forEach((src, i) => {
-            const d = document.createElement('div');
-            d.className = 'slaid' + (i === 0 ? ' aktiivne' : '');
-            
-            if (src) {
-                const img = document.createElement('img');
-                img.src = src;
-                img.referrerPolicy = "no-referrer"; 
-                img.onerror = function() { this.style.display='none'; };
-                d.appendChild(img);
-            }
-            cont.insertBefore(d, prog);
-        });
+      const prog = document.getElementById("progress-raam");
 
-        if (window.timer) clearInterval(window.timer);
-        window.timer = setInterval(() => {
-            if (images.length > 0) {
-                currentIdx = (currentIdx + 1) % images.length;
-                const slides = document.querySelectorAll('.slaid');
-                slides.forEach((s, i) => s.className = 'slaid' + (i === currentIdx ? ' aktiivne' : ''));
-                updateDisplay(currentIdx);
-            }
-        }, slideTime);
+      slides.forEach((s, i) => {
+        const d = document.createElement("div");
+        d.className = "slaid" + (i === 0 ? " aktiivne" : "");
+
+        const img = document.createElement("img");
+        img.src = s.img;
+        img.referrerPolicy = "no-referrer";
+        img.loading = "eager";
+        img.decoding = "async";
+        img.onerror = function() { this.style.display = "none"; };
+
+        d.appendChild(img);
+        cont.insertBefore(d, prog);
+      });
+
+      if (timer) clearTimeout(timer);
+      currentIdx = 0;
+      scheduleNext();
+    }
+
+    function startProgress(ms) {
+      const bar = document.getElementById("progress-riba");
+      if (!bar) return;
+      bar.style.transition = "none";
+      bar.style.width = "0%";
+      setTimeout(() => {
+        bar.style.transition = `width ${ms}ms linear`;
+        bar.style.width = "100%";
+      }, 50);
+    }
+
+    function scheduleNext() {
+      if (!slides.length) return;
+
+      const ms = slides[currentIdx] ? slides[currentIdx].ms : globalSettings.defaultSlideMs;
+      startProgress(ms);
+
+      timer = setTimeout(() => {
+        currentIdx = (currentIdx + 1) % slides.length;
+
+        const nodes = document.querySelectorAll(".slaid");
+        nodes.forEach((n, i) => n.className = "slaid" + (i === currentIdx ? " aktiivne" : ""));
+
+        updateDisplay(currentIdx);
+        scheduleNext();
+      }, ms);
     }
 
     function updateDisplay(idx) {
-      const meta = metaInfo[idx] || metaInfo[0] || "";
-      document.getElementById('meta-tekst').innerText = meta;
+      const s = slides[idx] || slides[0];
+      if (!s) return;
 
-      const tBox = document.getElementById('sisu-tekst');
-      tBox.innerText = descInfo[idx] || descInfo[0] || "";
-      
-      tBox.style.transition = 'none';
-      tBox.style.transform = 'translateY(0)';
-      
+      document.getElementById("meta-tekst").innerText = s.meta || "";
+      const tBox = document.getElementById("sisu-tekst");
+      tBox.innerText = s.desc || "";
+
+      applyLayout(globalSettings.layout);
+      applyTheme(globalSettings.theme);
+
+      // kirjeldus scroll
+      tBox.style.transition = "none";
+      tBox.style.transform = "translateY(0)";
+
       setTimeout(() => {
-        const hC = document.getElementById('sisu-konteiner').offsetHeight;
+        const hC = document.getElementById("sisu-konteiner").offsetHeight;
         const hT = tBox.scrollHeight;
         if (hT > hC) {
           setTimeout(() => {
             tBox.style.transition = `transform 16000ms linear`;
             tBox.style.transform = `translateY(-${hT - hC + 10}px)`;
-          }, 2000);
+          }, 1200);
         }
-      }, 100);
+      }, 80);
 
-      const tTicker = document.getElementById('jooksev-tekst');
-      const uusTekst = tickers[idx] || tickers[0] || "Tere tulemast Konguta rahvamajja!";
-      
-      if (tTicker.innerText !== uusTekst) {
-          tTicker.innerText = uusTekst;
-          tTicker.style.animation = 'none';
-          tTicker.offsetHeight; 
-          tTicker.style.animation = 'veeremine 90s linear infinite';
-      }
+      // ticker
+      const tTicker = document.getElementById("jooksev-tekst");
+      const txt = s.ticker || "Tere tulemast Konguta rahvamajja!";
+      if (tTicker.innerText !== txt) tTicker.innerText = txt;
+      setTickerSpeed(globalSettings.tickerSpeed);
 
-      const link = qrs[idx] || qrs[0];
-      const qrBox = document.getElementById('qr-box');
+      // QR
+      const qrBox = document.getElementById("qr-box");
+      const label = document.getElementById("qr-label");
+      const link = s.qr;
+
+      const labelText = (s.qrLabel || "OSTA PILET").trim();
+      if (label) label.innerText = (labelText || "OSTA PILET").toUpperCase();
+
       if (qrBox) {
-        if (qrGen && link && (link.includes('http') || link.includes('.'))) {
+        if (qrGen && link && (link.includes("http") || link.includes("."))) {
           try {
             qrGen.clear();
-            const finalLink = link.startsWith('http') ? link : 'https://' + link;
+            const finalLink = link.startsWith("http") ? link : "https://" + link;
             qrGen.makeCode(finalLink);
-            qrBox.style.display = 'block';
-          } catch(e) { qrBox.style.display = 'none'; }
+            qrBox.style.display = "block";
+          } catch(e) {
+            qrBox.style.display = "none";
+          }
         } else {
-          qrBox.style.display = 'none';
+          qrBox.style.display = "none";
         }
       }
+    }
 
-      const bar = document.getElementById('progress-riba');
-      if (bar) {
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
-        setTimeout(() => {
-          bar.style.transition = `width ${slideTime}ms linear`;
-          bar.style.width = '100%';
-        }, 50);
+    function loadMockData() {
+      slides = [{
+        img: "",
+        meta: "Andmete laadimine...",
+        desc: "Kontrollin ühendust Google Sheetsiga...",
+        ticker: "Palun kontrolli internetiühendust.",
+        qr: "",
+        qrLabel: "INFO",
+        ms: globalSettings.defaultSlideMs
+      }];
+      initSlides();
+      updateDisplay(0);
+      markUpdated("Offline");
+    }
+
+    function initSystem() {
+      initQR();
+
+      updateTime();
+      setInterval(updateTime, 1000);
+
+      fetchWeather();
+      setInterval(fetchWeather, 1800000);
+
+      // cache kohe ekraanile
+      const cached = cacheLoad();
+      if (cached && cached.settings) {
+        Object.assign(globalSettings, cached.settings);
+        applyLayout(globalSettings.layout);
+        applyTheme(globalSettings.theme);
+        setTickerSpeed(globalSettings.tickerSpeed);
+
+        audioState.enabled = globalSettings.audioEnabled;
+        audioState.url = globalSettings.audioUrl;
+        audioState.volume = globalSettings.audioVolume;
+        applyAudioSettings();
       }
+      if (cached && cached.slides && cached.slides.length) {
+        slides = cached.slides;
+        initSlides();
+        updateDisplay(0);
+        markUpdated("Offline");
+      } else {
+        loadMockData();
+      }
+
+      // online
+      loadAll();
+      setInterval(loadAll, 300000);
+      setInterval(() => applyTheme(globalSettings.theme), 60000);
     }
 
     window.onload = initSystem;
