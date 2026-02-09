@@ -79,7 +79,7 @@
       flex-shrink: 0;
     }
     #meta-tekst {
-      font-size: 1.1rem; /* Vähendatud suurus */
+      font-size: 1.1rem;
       line-height: 1.3;
       font-weight: 700;
       color: #000;
@@ -95,7 +95,7 @@
       mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
     }
     #sisu-tekst {
-      font-size: 0.95rem; /* Vähendatud suurus */
+      font-size: 0.95rem;
       line-height: 1.5;
       font-weight: 400;
       color: #333;
@@ -158,7 +158,7 @@
       margin-bottom: 15px;
     }
     #kell { 
-      font-size: 3rem; /* Väiksem kell */
+      font-size: 3rem; 
       font-weight: 800; line-height: 1; margin: 0; 
       color: #000; letter-spacing: -1px; 
     }
@@ -206,6 +206,21 @@
         background: red; color: white; border-radius: 5px; font-size: 12px; 
         z-index: 9999; display: none;
     }
+
+    /* HELI START NUPP */
+    #heli-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6); z-index: 999;
+        display: none; align-items: center; justify-content: center;
+        flex-direction: column; cursor: pointer;
+    }
+    #heli-teade {
+        background: white; padding: 20px 40px; border-radius: 15px;
+        text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        border: 2px solid var(--aktsent);
+    }
+    #heli-teade h2 { margin: 0; font-size: 1.5rem; color: #000; }
+    #heli-teade p { margin: 10px 0 0; color: #555; }
   </style>
 </head>
 
@@ -213,10 +228,19 @@
   <div id="taust"></div>
   <div id="veateade"></div>
 
-  <!-- Muusika -->
-  <audio id="taustamuusika" loop>
-      <source src="music.mp3" type="audio/mpeg">
+  <!-- INTERNETI RAADIO STRIIM -->
+  <!-- Panin 'preload="none"', et see ei blokiks lehe laadimist -->
+  <audio id="taustamuusika" loop preload="none">
+      <source src="https://stream.zeno.fm/0r0xa792kwzuv" type="audio/mpeg">
   </audio>
+
+  <!-- Heli käivitamise nupp/kiht -->
+  <div id="heli-overlay" onclick="startAudio()">
+      <div id="heli-teade">
+          <h2>🎵 Muusika</h2>
+          <p>Vajuta <b>OK</b> või klõpsa siia heli käivitamiseks</p>
+      </div>
+  </div>
 
   <div id="pearaam">
     <!-- VASAK: Veerg B (Info) ja C (Kirjeldus) -->
@@ -258,10 +282,9 @@
   </div>
 
   <script>
-    // Globaalne veahaldus
     window.onerror = function(msg, url, line) {
       console.error("Viga:", msg);
-      return true;
+      return true; // Hoiab ära veateate ekraanil
     };
 
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbA6FpGTiHQfx9QW-0zSTRMvCH8QZGXAJ-uR_bbNRFFQeFXXeCoNi-6urAu-utmRcNs2D_Gb91W0MZ/pub?output=csv";
@@ -275,17 +298,47 @@
         fetchWeather();
         initQR();
         
-        // Käivita andmete laadimine kohe
+        // Proovime muusikat, aga ei lase sellel takistada muud
+        setTimeout(initAudio, 2000); 
+        
         loadData();
         
-        // Perioodilised tegevused
         setInterval(updateTime, 1000);
-        setInterval(fetchWeather, 1800000); // 30 min
-        setInterval(loadData, 300000); // 5 min
+        setInterval(fetchWeather, 1800000);
+        setInterval(loadData, 300000);
         
-        // Refresh iga 2h (mitte 1h, et vähendada katkestusi)
         setTimeout(() => location.reload(), 7200000);
     }
+
+    // --- HELI ---
+    function initAudio() {
+        const audio = document.getElementById('taustamuusika');
+        if(!audio) return;
+        audio.volume = 0.15; 
+        
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                console.log("Muusika mängib");
+            }).catch(error => {
+                // Kui autoplay on keelatud, näita nuppu
+                document.getElementById('heli-overlay').style.display = 'flex';
+            });
+        }
+    }
+
+    function startAudio() {
+        const audio = document.getElementById('taustamuusika');
+        if(audio) audio.play();
+        document.getElementById('heli-overlay').style.display = 'none';
+    }
+    
+    document.addEventListener('keydown', function(event) {
+        if (document.getElementById('heli-overlay').style.display === 'flex') {
+            startAudio();
+        }
+    });
+    // ------------
 
     function initQR() {
       try {
@@ -335,9 +388,9 @@
 
     function loadData() {
         if (typeof Papa === 'undefined') {
-            console.error("PapaParse ei laadinud.");
-            document.getElementById('veateade').innerText = "Viga: PapaParse puudub";
-            document.getElementById('veateade').style.display = "block";
+            // Varuplaan: Kui PapaParse ei lae, proovi näidisandmetega
+            console.error("PapaParse puudub, laen varuandmed");
+            loadMockData();
             return;
         }
 
@@ -351,7 +404,6 @@
 
                 for (let i = 0; i < rows.length; i++) {
                     const cols = rows[i];
-                    // Kontrollime, kas rida on piisavalt pikk
                     if (cols.length >= 1) {
                         const imgLink = (cols[0] && cols[0].includes('http')) ? fixLink(cols[0]) : "";
                         if (!imgLink) continue;
@@ -365,66 +417,72 @@
                 }
 
                 if (_i.length > 0) {
-                    // Kui andmed muutusid või on esimene kord
                     if (images.length === 0 || JSON.stringify(images) !== JSON.stringify(_i)) {
                         images = _i; metaInfo = _m; descInfo = _d; tickers = _t; qrs = _q;
                         initSlides();
                         updateDisplay(0);
-                        document.getElementById('veateade').style.display = "none";
                     }
                 } else {
-                    document.getElementById('meta-tekst').innerText = "Tabelis pole pilte (Veerg A)";
+                    // Kui tabel tühi, lae mock
+                    loadMockData();
                 }
             },
             error: function(err) {
                 console.error("CSV viga", err);
-                document.getElementById('veateade').innerText = "Andmete laadimine ebaõnnestus";
-                document.getElementById('veateade').style.display = "block";
+                loadMockData();
             }
         });
     }
 
+    // VARUPLAAN (et ekraan ei oleks tühi)
+    function loadMockData() {
+        images = [""]; 
+        metaInfo = ["Andmete laadimine..."];
+        descInfo = ["Kontrollin ühendust Google Sheetsiga..."];
+        tickers = ["Palun kontrolli internetiühendust."];
+        qrs = [""];
+        initSlides();
+        updateDisplay(0);
+    }
+
     function initSlides() {
-      const cont = document.getElementById('kesk-paneel');
-      // Eemalda vanad slaidid, hoia progress alles
-      const oldSlides = document.querySelectorAll('.slaid');
-      oldSlides.forEach(el => el.remove());
-      const prog = document.getElementById('progress-raam');
+        const cont = document.getElementById('kesk-paneel');
+        const oldSlides = document.querySelectorAll('.slaid');
+        oldSlides.forEach(el => el.remove());
+        const prog = document.getElementById('progress-raam');
 
-      images.forEach((src, i) => {
-        const d = document.createElement('div');
-        d.className = 'slaid' + (i === 0 ? ' aktiivne' : '');
-        
-        const img = document.createElement('img');
-        img.src = src;
-        img.referrerPolicy = "no-referrer"; 
-        img.onerror = function() { this.style.display='none'; };
-        
-        d.appendChild(img);
-        cont.insertBefore(d, prog);
-      });
+        images.forEach((src, i) => {
+            const d = document.createElement('div');
+            d.className = 'slaid' + (i === 0 ? ' aktiivne' : '');
+            
+            if (src) {
+                const img = document.createElement('img');
+                img.src = src;
+                img.referrerPolicy = "no-referrer"; 
+                img.onerror = function() { this.style.display='none'; };
+                d.appendChild(img);
+            }
+            cont.insertBefore(d, prog);
+        });
 
-      if (window.timer) clearInterval(window.timer);
-      window.timer = setInterval(() => {
-        if (images.length > 0) {
-          currentIdx = (currentIdx + 1) % images.length;
-          const slides = document.querySelectorAll('.slaid');
-          slides.forEach((s, i) => s.className = 'slaid' + (i === currentIdx ? ' aktiivne' : ''));
-          updateDisplay(currentIdx);
-        }
-      }, slideTime);
+        if (window.timer) clearInterval(window.timer);
+        window.timer = setInterval(() => {
+            if (images.length > 0) {
+                currentIdx = (currentIdx + 1) % images.length;
+                const slides = document.querySelectorAll('.slaid');
+                slides.forEach((s, i) => s.className = 'slaid' + (i === currentIdx ? ' aktiivne' : ''));
+                updateDisplay(currentIdx);
+            }
+        }, slideTime);
     }
 
     function updateDisplay(idx) {
-      // 1. Ülemine info
       const meta = metaInfo[idx] || metaInfo[0] || "";
       document.getElementById('meta-tekst').innerText = meta;
 
-      // 2. Alumine sisu (kerimine)
       const tBox = document.getElementById('sisu-tekst');
       tBox.innerText = descInfo[idx] || descInfo[0] || "";
       
-      // Reset kerimine
       tBox.style.transition = 'none';
       tBox.style.transform = 'translateY(0)';
       
@@ -433,26 +491,22 @@
         const hT = tBox.scrollHeight;
         if (hT > hC) {
           setTimeout(() => {
-            // Kerib aeglasemalt ja sujuvamalt
             tBox.style.transition = `transform 16000ms linear`;
             tBox.style.transform = `translateY(-${hT - hC + 10}px)`;
           }, 2000);
         }
       }, 100);
 
-      // 3. Alumine riba (ticker)
       const tTicker = document.getElementById('jooksev-tekst');
       const uusTekst = tickers[idx] || tickers[0] || "Tere tulemast Konguta rahvamajja!";
       
       if (tTicker.innerText !== uusTekst) {
           tTicker.innerText = uusTekst;
-          // Restart animatsioon
           tTicker.style.animation = 'none';
           tTicker.offsetHeight; 
           tTicker.style.animation = 'veeremine 90s linear infinite';
       }
 
-      // 4. QR Kood
       const link = qrs[idx] || qrs[0];
       const qrBox = document.getElementById('qr-box');
       if (qrBox) {
@@ -468,7 +522,6 @@
         }
       }
 
-      // 5. Progressiriba
       const bar = document.getElementById('progress-riba');
       if (bar) {
         bar.style.transition = 'none';
@@ -480,7 +533,6 @@
       }
     }
 
-    // Käivita süsteem
     window.onload = initSystem;
   </script>
 </body>
