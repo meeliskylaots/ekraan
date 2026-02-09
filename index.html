@@ -503,15 +503,24 @@
     }
 
     function fixLink(u) {
-      if (!u) return "";
-      u = u.replace(/"/g, "").trim();
-      if (u.includes("drive.google.com")) {
-        let id = "";
-        if (u.includes("id=")) id = u.split("id=")[1].split("&")[0];
-        else if (u.includes("/d/")) id = u.split("/d/")[1].split("/")[0];
-        if (id) return "https://drive.google.com/uc?export=view&id=" + id;
-      }
-      return u;
+  if (!u) return "";
+  u = u.replace(/"/g, "").trim();
+
+  // Kui juba otse pildi link, jäta rahule
+  if (u.includes("googleusercontent.com") || u.includes("lh3.googleusercontent.com")) return u;
+
+  if (u.includes("drive.google.com")) {
+    let id = "";
+    if (u.includes("id=")) id = u.split("id=")[1].split("&")[0];
+    else if (u.includes("/d/")) id = u.split("/d/")[1].split("/")[0];
+
+    if (!id) return ""; // kaustalink vms
+
+    // Otse pildi CDN link (stabiilsem kui uc?export=view)
+    return "https://lh3.googleusercontent.com/d/" + id;
+  }
+
+  return u;
     }
 
     function setStatus(txt) {
