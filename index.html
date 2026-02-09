@@ -6,7 +6,6 @@
   <meta name="referrer" content="no-referrer">
   <title>Konguta Rahvamaja Infoekraan</title>
 
-  <!-- Välised teegid: QR kood ja PapaParse (korrektseks CSV lugemiseks) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   
@@ -19,7 +18,7 @@
       --tekst-hall: #444;
       --paneel-bg: rgba(255, 255, 255, 0.93);
       --taust: #f0f2f5;
-      --riba-korgus: 40px; /* Veelgi madalam riba */
+      --riba-korgus: 40px;
       --vari: 0 4px 20px rgba(0,0,0,0.08);
     }
 
@@ -58,7 +57,7 @@
       overflow: hidden;
     }
 
-    /* VASAK PANEEL: Info ja Kirjeldus - VEEL VÄIKSEMAD FONDID */
+    /* VASAK PANEEL */
     #vasak-paneel {
       flex: 2.5; 
       padding: 25px;
@@ -73,64 +72,35 @@
       border-bottom: 1px solid #ddd; padding-bottom: 4px;
     }
 
-    #meta-info {
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-    }
+    #meta-info { margin-bottom: 15px; padding-bottom: 10px; }
     #meta-tekst {
-      font-size: 1.1rem; /* Vähendatud suurus */
-      line-height: 1.3;
-      font-weight: 700;
-      color: #000;
-      white-space: pre-wrap;
+      font-size: 1.1rem; line-height: 1.3; font-weight: 700; color: #000; white-space: pre-wrap;
     }
 
     #sisu-konteiner {
-      flex-grow: 1;
-      overflow: hidden;
-      position: relative;
-      /* Hajutus all ääres, et tekst ei lõppeks järsult */
+      flex-grow: 1; overflow: hidden; position: relative;
       -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
       mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
     }
     #sisu-tekst {
-      font-size: 0.95rem; /* Vähendatud suurus */
-      line-height: 1.5;
-      font-weight: 400;
-      color: #333;
-      position: absolute;
-      top: 0; width: 100%;
-      transition: transform linear;
-      white-space: pre-wrap;
+      font-size: 0.95rem; line-height: 1.5; font-weight: 400; color: #333;
+      position: absolute; top: 0; width: 100%; transition: transform linear; white-space: pre-wrap;
     }
 
-    /* KESKMINE PANEEL: Pilt */
+    /* KESKMINE PANEEL */
     #kesk-paneel {
-      flex: 5.5; 
-      position: relative;
-      background: rgba(255, 255, 255, 0.4);
-      border-radius: 16px;
+      flex: 5.5; position: relative; background: rgba(255, 255, 255, 0.4); border-radius: 16px;
     }
 
     .slaid {
-      position: absolute;
-      width: 100%; height: 100%;
-      top: 0; left: 0;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-      box-sizing: border-box;
+      position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0;
+      transition: opacity 1s ease-in-out; z-index: 1;
+      display: flex; align-items: center; justify-content: center; padding: 10px; box-sizing: border-box;
     }
     .slaid.aktiivne { opacity: 1; }
 
     .slaid img {
-      width: 100%; height: 100%;
-      object-fit: contain;
-      display: block;
+      width: 100%; height: 100%; object-fit: contain; display: block;
       filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
     }
 
@@ -139,47 +109,21 @@
       background: rgba(0,0,0,0.05); z-index: 10;
     }
     #progress-riba {
-      height: 100%; width: 0%;
-      background: var(--aktsent);
-      transition: width linear;
+      height: 100%; width: 0%; background: var(--aktsent); transition: width linear;
     }
 
-    /* PAREM PANEEL: Kell ja QR */
-    #parem-paneel {
-      flex: 2; 
-      padding: 20px;
-      text-align: right;
-    }
+    /* PAREM PANEEL */
+    #parem-paneel { flex: 2; padding: 20px; text-align: right; }
 
-    #kella-kast {
-      border-bottom: 1px solid #eee;
-      padding-bottom: 15px;
-      margin-bottom: 15px;
-    }
-    #kell { 
-      font-size: 3rem; /* Väiksem kell */
-      font-weight: 800; line-height: 1; margin: 0; 
-      color: #000; letter-spacing: -1px; 
-    }
-    #kuupaev { 
-      font-size: 0.9rem; color: #444; margin-top: 5px; 
-      font-weight: 600; text-transform: capitalize; 
-    }
-    #ilm { 
-      font-size: 1.1rem; color: #333; margin-top: 8px; font-weight: 500; 
-    }
+    #kella-kast { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+    #kell { font-size: 3rem; font-weight: 800; line-height: 1; margin: 0; color: #000; letter-spacing: -1px; }
+    #kuupaev { font-size: 0.9rem; color: #444; margin-top: 5px; font-weight: 600; text-transform: capitalize; }
+    #ilm { font-size: 1.1rem; color: #333; margin-top: 8px; font-weight: 500; }
 
     #qr-box {
-      margin-top: auto;
-      background: #fff;
-      padding: 12px;
-      border-radius: 12px;
-      display: none;
-      align-self: flex-end;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-      text-align: center;
-      z-index: 10;
-      border: 1px solid #eee;
+      margin-top: auto; background: #fff; padding: 12px; border-radius: 12px;
+      display: none; align-self: flex-end; box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      text-align: center; z-index: 10; border: 1px solid #eee;
     }
     #qrcode { margin-bottom: 5px; display: flex; justify-content: center; }
     #qr-box span { font-size: 0.65rem; font-weight: 800; color: #000; text-transform: uppercase; }
@@ -187,57 +131,72 @@
     /* ALUMINE UUDISTERIBA */
     #alumine-riba {
       position: absolute; bottom: 0; left: 0; width: 100%; height: var(--riba-korgus);
-      background: #fff;
-      display: flex; align-items: center; overflow: hidden;
-      border-top: 1px solid #ddd; z-index: 20;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      background: #fff; display: flex; align-items: center; overflow: hidden;
+      border-top: 1px solid #ddd; z-index: 20; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     }
     #jooksev-tekst {
       white-space: nowrap; padding-left: 100%;
-      /* MUUDETUD: 90s (veelgi aeglasem ja rahulikum) */
       animation: veeremine 90s linear infinite; 
-      font-size: 1.1rem; 
-      font-weight: 600; color: #222;
+      font-size: 1.1rem; font-weight: 600; color: #222;
     }
     @keyframes veeremine { from { transform: translateX(0); } to { transform: translateX(-100%); } }
     
-    #debug-info {
-        position: absolute; top: 0; left: 0; padding: 5px; background: red; color: white; z-index: 1000; font-size: 10px; display: none;
+    /* HELI START NUPP (Overlay) */
+    #heli-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6); z-index: 999;
+        display: none; align-items: center; justify-content: center;
+        flex-direction: column; cursor: pointer;
     }
+    #heli-teade {
+        background: white; padding: 20px 40px; border-radius: 15px;
+        text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        border: 2px solid var(--aktsent);
+    }
+    #heli-teade h2 { margin: 0; font-size: 1.5rem; color: #000; }
+    #heli-teade p { margin: 10px 0 0; color: #555; }
   </style>
 </head>
 
 <body>
   <div id="taust"></div>
-  <div id="debug-info"></div>
+  
+  <!-- INTERNETI RAADIO STRIIM -->
+  <!-- Siia võid panna suvalise HTTPS mp3 striimi lingi -->
+  <!-- Hetkel kasutame ZenoFM tasuta Smooth Jazzi striimi näitena -->
+  <audio id="taustamuusika" loop>
+      <source src="https://stream.zeno.fm/0r0xa792kwzuv" type="audio/mpeg">
+  </audio>
+
+  <!-- Heli käivitamise nupp/kiht -->
+  <div id="heli-overlay" onclick="startAudio()">
+      <div id="heli-teade">
+          <h2>🎵 Muusika</h2>
+          <p>Vajuta <b>OK</b> või klõpsa siia heli käivitamiseks</p>
+      </div>
+  </div>
 
   <div id="pearaam">
-    <!-- VASAK PANEEL: Veerg B (Info) ja C (Kirjeldus) -->
+    <!-- VASAK PANEEL -->
     <div id="vasak-paneel" class="klaas-paneel">
       <span class="silt">INFO</span>
-      <div id="meta-info">
-        <div id="meta-tekst">Laadin...</div>
-      </div>
-
+      <div id="meta-info"><div id="meta-tekst">Laadin...</div></div>
       <span class="silt">KIRJELDUS</span>
-      <div id="sisu-konteiner">
-        <div id="sisu-tekst">Andmete laadimine...</div>
-      </div>
+      <div id="sisu-konteiner"><div id="sisu-tekst">Andmete laadimine...</div></div>
     </div>
 
-    <!-- KESKMINE PANEEL: Pilt (Veerg A) -->
+    <!-- KESKMINE PANEEL -->
     <div id="kesk-paneel" class="klaas-paneel">
       <div id="progress-raam"><div id="progress-riba"></div></div>
     </div>
 
-    <!-- PAREM PANEEL: Kell ja QR (Veerg E) -->
+    <!-- PAREM PANEEL -->
     <div id="parem-paneel" class="klaas-paneel">
       <div id="kella-kast">
         <div id="kell">00:00</div>
         <div id="kuupaev">...</div>
         <div id="ilm">Konguta • <span id="temp">--</span>°C</div>
       </div>
-
       <div id="qr-box">
         <div id="qrcode"></div>
         <span>OSTA PILET</span>
@@ -245,17 +204,12 @@
     </div>
   </div>
 
-  <!-- ALUMINE RIBA: Veerg D -->
   <div id="alumine-riba">
     <div id="jooksev-tekst">Tere tulemast Konguta rahvamajja!</div>
   </div>
 
   <script>
-    // Püüame kinni globaalsed vead
-    window.onerror = function(msg, url, line) {
-      console.log("Viga:", msg);
-      return true;
-    };
+    window.onerror = function(msg, url, line) { console.log("Viga:", msg); return true; };
 
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbA6FpGTiHQfx9QW-0zSTRMvCH8QZGXAJ-uR_bbNRFFQeFXXeCoNi-6urAu-utmRcNs2D_Gb91W0MZ/pub?output=csv";
 
@@ -263,13 +217,44 @@
     const slideTime = 20000;
     let qrGen = null;
 
+    // --- HELI LOOGIKA ---
+    function initAudio() {
+        const audio = document.getElementById('taustamuusika');
+        audio.volume = 0.20; // 20% tugevus - piisavalt vaikne taustaks
+        
+        // Proovime automaatselt mängida
+        const playPromise = audio.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                console.log("Muusika mängib");
+            }).catch(error => {
+                console.log("Autoplay blokeeritud, ootan vajutust");
+                document.getElementById('heli-overlay').style.display = 'flex';
+            });
+        }
+    }
+
+    function startAudio() {
+        const audio = document.getElementById('taustamuusika');
+        audio.play();
+        document.getElementById('heli-overlay').style.display = 'none';
+    }
+    
+    document.addEventListener('keydown', function(event) {
+        if (document.getElementById('heli-overlay').style.display === 'flex') {
+            startAudio();
+        }
+    });
+    // --------------------
+
     function initQR() {
       try {
         const el = document.getElementById("qrcode");
         if (typeof QRCode !== 'undefined' && el) {
           qrGen = new QRCode(el, { width: 110, height: 110, colorDark: "#000000", colorLight: "#ffffff" });
         }
-      } catch (e) { console.log("QR viga", e); }
+      } catch (e) {}
     }
 
     function updateTime() {
@@ -282,18 +267,15 @@
 
     function fetchWeather() {
       fetch('https://api.open-meteo.com/v1/forecast?latitude=58.24&longitude=26.29&current_weather=true')
-        .then(r => r.json())
-        .then(d => {
+        .then(r => r.json()).then(d => {
           if(d && d.current_weather) {
             document.getElementById('temp').innerText = Math.round(d.current_weather.temperature);
           }
-        })
-        .catch(() => {});
+        }).catch(() => {});
     }
 
     function fixLink(u) {
-      if (!u) return "";
-      u = u.replace(/"/g, '').trim(); // Eemalda jutumärgid
+      if (!u) return ""; u = u.replace(/"/g, '').trim();
       if (u.includes('drive.google.com')) {
         let id = "";
         if (u.includes('id=')) id = u.split('id=')[1].split('&')[0];
@@ -304,40 +286,23 @@
     }
 
     function loadData() {
-        // Kasutame PapaParse teeki korrektseks CSV lugemiseks (saab aru komadest ja reavahetustest tekstis)
         Papa.parse(csvUrl + "&t=" + Date.now(), {
-            download: true,
-            header: false,
-            skipEmptyLines: true,
+            download: true, header: false, skipEmptyLines: true,
             complete: function(results) {
                 const rows = results.data;
                 const _i=[], _m=[], _d=[], _t=[], _q=[];
 
-                // Alustame reast 0 (või 1, kui on päis)
                 for (let i = 0; i < rows.length; i++) {
                     const cols = rows[i];
-                    
-                    // Kontrollime, kas rida on piisavalt pikk
                     if (cols.length >= 1) {
                         const imgLink = (cols[0] && cols[0].includes('http')) ? fixLink(cols[0]) : "";
-                        
-                        // Kui pilti pole, jätame rea vahele
                         if (!imgLink) continue;
 
-                        // VEERG B -> Ülemine info (Aeg/Koht)
-                        const tMeta = cols[1] ? cols[1].trim() : "";
-                        // VEERG C -> Kirjeldus
-                        const tDesc = cols[2] ? cols[2].trim() : "";
-                        // VEERG D -> Ticker (alumine riba)
-                        const tTick = cols[3] ? cols[3].trim() : "";
-                        // VEERG E -> QR
-                        const tQr   = cols[4] ? cols[4].trim() : "";
-
                         _i.push(imgLink);
-                        _m.push(tMeta);
-                        _d.push(tDesc);
-                        _t.push(tTick);
-                        _q.push(tQr);
+                        _m.push(cols[1] ? cols[1].trim() : "");
+                        _d.push(cols[2] ? cols[2].trim() : "");
+                        _t.push(cols[3] ? cols[3].trim() : "");
+                        _q.push(cols[4] ? cols[4].trim() : "");
                     }
                 }
 
@@ -345,22 +310,14 @@
                     images = _i; metaInfo = _m; descInfo = _d; tickers = _t; qrs = _q;
                     initSlides();
                     updateDisplay(0);
-                } else {
-                    document.getElementById('debug-info').style.display = 'block';
-                    document.getElementById('debug-info').innerText = "Tabel on tühi või ei leitud pildilinke (A-veerg).";
                 }
             },
-            error: function(err) {
-                console.log("CSV viga:", err);
-                document.getElementById('debug-info').style.display = 'block';
-                document.getElementById('debug-info').innerText = "Viga andmete laadimisel.";
-            }
+            error: function(err) { console.log("CSV viga", err); }
         });
     }
 
     function initSlides() {
       const cont = document.getElementById('kesk-paneel');
-      // Eemaldame vanad slaidid, jätame progressiriba alles
       const oldSlides = document.querySelectorAll('.slaid');
       oldSlides.forEach(el => el.remove());
       const prog = document.getElementById('progress-raam');
@@ -368,15 +325,10 @@
       images.forEach((src, i) => {
         const d = document.createElement('div');
         d.className = 'slaid' + (i === 0 ? ' aktiivne' : '');
-        
         const img = document.createElement('img');
-        img.src = src;
-        img.referrerPolicy = "no-referrer"; 
+        img.src = src; img.referrerPolicy = "no-referrer"; 
         img.onerror = function() { this.style.display='none'; };
-        
         d.appendChild(img);
-        
-        // Lisame pildi enne progressiriba
         cont.insertBefore(d, prog);
       });
 
@@ -392,79 +344,46 @@
     }
 
     function updateDisplay(idx) {
-      // 1. Ülemine info (Veerg B)
-      // Kasutame praeguse rea infot, kui puudub, siis esimese rea oma
       const meta = metaInfo[idx] || metaInfo[0] || "";
       document.getElementById('meta-tekst').innerText = meta;
 
-      // 2. Alumine sisu (kerimine) (Veerg C)
       const tBox = document.getElementById('sisu-tekst');
       tBox.innerText = descInfo[idx] || descInfo[0] || "";
-      tBox.style.transition = 'none';
-      tBox.style.transform = 'translateY(0)';
+      tBox.style.transition = 'none'; tBox.style.transform = 'translateY(0)';
 
       setTimeout(() => {
         const hC = document.getElementById('sisu-konteiner').offsetHeight;
         const hT = tBox.scrollHeight;
         if (hT > hC) {
           setTimeout(() => {
-            // Kerib aeglaselt 15 sekundit
             tBox.style.transition = `transform 15000ms linear`;
             tBox.style.transform = `translateY(-${hT - hC + 10}px)`;
           }, 2000);
         }
       }, 100);
 
-      // 3. Alumine riba (ticker) (Veerg D)
       const tTicker = document.getElementById('jooksev-tekst');
       const uusTekst = tickers[idx] || tickers[0] || "Tere tulemast Konguta rahvamajja!";
-      
       if (tTicker.innerText !== uusTekst) {
           tTicker.innerText = uusTekst;
-          // Reset animatsioon
-          tTicker.style.animation = 'none';
-          tTicker.offsetHeight; /* trigger reflow */
+          tTicker.style.animation = 'none'; tTicker.offsetHeight; 
           tTicker.style.animation = 'veeremine 90s linear infinite';
       }
 
-      // 4. QR Kood (Veerg E)
       const link = qrs[idx] || qrs[0];
       const qrBox = document.getElementById('qr-box');
       if (qrBox) {
         if (qrGen && link && (link.includes('http') || link.includes('.'))) {
           try {
-            qrGen.clear();
+            qrGen.clear(); 
             const finalLink = link.startsWith('http') ? link : 'https://' + link;
-            qrGen.makeCode(finalLink);
+            qrGen.makeCode(finalLink); 
             qrBox.style.display = 'block';
           } catch(e) { qrBox.style.display = 'none'; }
-        } else {
-          qrBox.style.display = 'none';
-        }
+        } else { qrBox.style.display = 'none'; }
       }
 
-      // 5. Progressiriba
       const bar = document.getElementById('progress-riba');
       if (bar) {
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
-        setTimeout(() => {
-          bar.style.transition = `width ${slideTime}ms linear`;
-          bar.style.width = '100%';
-        }, 50);
-      }
-    }
-
-    window.onload = () => {
-      initQR();
-      updateTime(); setInterval(updateTime, 1000);
-      fetchWeather(); setInterval(fetchWeather, 1800000);
-      loadData();
-      setInterval(loadData, 300000);
-      setTimeout(() => location.reload(), 3600000);
-    };
-  </script>
-</body>
-</html>
-
-
+        bar.style.transition = 'none'; bar.style.width = '0%';
+        setTimeout(() => { bar.style.transition = `width ${slideTime}ms linear`; bar.style.width = '100%'; }, 50);
