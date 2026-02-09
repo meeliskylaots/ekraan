@@ -30,10 +30,8 @@
     }
 
     body, html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
       overflow: hidden;
       font-family: 'Inter', sans-serif;
       color: var(--tekst-tume);
@@ -41,10 +39,8 @@
     }
 
     #taust {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
       background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
       z-index: -1;
     }
@@ -74,7 +70,6 @@
       flex-direction: column;
       overflow: hidden;
     }
-
     :root[data-theme="dark"] .klaas-paneel {
       border: 1px solid rgba(255,255,255,0.10);
     }
@@ -98,7 +93,6 @@
       padding-bottom: 4px;
       flex-shrink: 0;
     }
-
     :root[data-theme="dark"] .silt {
       color: rgba(255,255,255,0.60);
       border-bottom: 1px solid rgba(255,255,255,0.10);
@@ -145,17 +139,14 @@
       background: rgba(255, 255, 255, 0.35);
       border-radius: 16px;
     }
-
     :root[data-theme="dark"] #kesk-paneel {
       background: rgba(255, 255, 255, 0.06);
     }
 
     .slaid {
       position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
+      width: 100%; height: 100%;
+      top: 0; left: 0;
       opacity: 0;
       transition: opacity 1s ease-in-out;
       z-index: 1;
@@ -165,7 +156,6 @@
       padding: 10px;
       box-sizing: border-box;
     }
-
     .slaid.aktiivne { opacity: 1; }
 
     .slaid img {
@@ -179,22 +169,17 @@
     .slaid.aktiivne img {
       animation: kenburns 20s linear both;
     }
-
     @keyframes kenburns {
       from { transform: scale(1.00); }
-      to { transform: scale(1.05); }
+      to   { transform: scale(1.05); }
     }
 
     #progress-raam {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
+      position: absolute; bottom: 0; left: 0;
+      width: 100%; height: 4px;
       background: rgba(0,0,0,0.05);
       z-index: 10;
     }
-
     :root[data-theme="dark"] #progress-raam {
       background: rgba(255,255,255,0.08);
     }
@@ -218,7 +203,6 @@
       padding-bottom: 15px;
       margin-bottom: 15px;
     }
-
     :root[data-theme="dark"] #kella-kast {
       border-bottom: 1px solid rgba(255,255,255,0.10);
     }
@@ -268,17 +252,12 @@
       z-index: 10;
       border: 1px solid rgba(0,0,0,0.06);
     }
-
     :root[data-theme="dark"] #qr-box {
       background: rgba(20, 26, 33, 0.92);
       border: 1px solid rgba(255,255,255,0.10);
     }
 
-    #qrcode {
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: center;
-    }
+    #qrcode { margin-bottom: 6px; display: flex; justify-content: center; }
 
     #qr-label {
       font-size: 0.65rem;
@@ -290,20 +269,15 @@
 
     /* ALUMINE */
     #alumine-riba {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: var(--riba-korgus);
+      position: absolute; bottom: 0; left: 0;
+      width: 100%; height: var(--riba-korgus);
       background: #fff;
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       overflow: hidden;
       border-top: 1px solid rgba(0,0,0,0.10);
       z-index: 20;
       box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     }
-
     :root[data-theme="dark"] #alumine-riba {
       background: rgba(20, 26, 33, 0.92);
       border-top: 1px solid rgba(255,255,255,0.08);
@@ -326,11 +300,8 @@
 
     /* HELI OVERLAY */
     #heli-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
       background: rgba(0,0,0,0.6);
       z-index: 999;
       display: none;
@@ -356,17 +327,8 @@
       border: 2px solid var(--aktsent);
     }
 
-    #heli-teade h2 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: var(--tekst-tume);
-    }
-
-    #heli-teade p {
-      margin: 10px 0 0;
-      color: var(--tekst-hall);
-      font-weight: 600;
-    }
+    #heli-teade h2 { margin: 0; font-size: 1.5rem; color: var(--tekst-tume); }
+    #heli-teade p  { margin: 10px 0 0; color: var(--tekst-hall); font-weight: 600; }
   </style>
 </head>
 
@@ -424,29 +386,46 @@
   </div>
 
   <script>
-    // -------------------------
-    // KONFIGURATSIOON (SINU SHEET)
-    // -------------------------
+    // ---------------------------------------
+    // KONFIG (sinu Sheet)
+    // ---------------------------------------
     const SHEET_ID = "15G1MVQSYJK1EHSXBpRIJEq85-BjsrEvpZDK9XSQa3OI";
     const SLIDES_GID = "0";
     const SETTINGS_GID = "873044695";
 
-    const slidesCsvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRbA6FpGTiHQfx9QW-0zSTRMvCH8QZGXAJ-uR_bbNRFFQeFXXeCoNi-6urAu-utmRcNs2D_Gb91W0MZ/pub?gid=0&single=true&output=csv`;
-    const settingsCsvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRbA6FpGTiHQfx9QW-0zSTRMvCH8QZGXAJ-uR_bbNRFFQeFXXeCoNi-6urAu-utmRcNs2D_Gb91W0MZ/pub?gid=873044695&single=true&output=csv`;
+    // Kui sul on "Publish to web" CSV lingid, pane need siia.
+    // Näide kuju: https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?gid=0&single=true&output=csv
+    const PUBLISHED_SLIDES_CSV = "";
+    const PUBLISHED_SETTINGS_CSV = "";
 
-    const CACHE_KEY = "krm_screen_cache_v2";
+    // Fallback (kui published lingid on tühjad)
+    const slidesCsvUrlFallback = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SLIDES_GID}`;
+    const settingsCsvUrlFallback = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SETTINGS_GID}`;
+
+    const slidesCsvUrl = PUBLISHED_SLIDES_CSV || slidesCsvUrlFallback;
+    const settingsCsvUrl = PUBLISHED_SETTINGS_CSV || settingsCsvUrlFallback;
+
+    const CACHE_KEY = "krm_screen_cache_v3";
     const DEFAULT_TICKER_S = 90;
     const DEFAULT_SLIDE_MS = 20000;
 
+    // ---------------------------------------
+    // STATE
+    // ---------------------------------------
     let slides = [];
     let currentIdx = 0;
     let qrGen = null;
-    let timer = null;
+    let slideTimer = null;
+
+    let tickerTimer = null;
+    let tickerIndex = 0;
 
     let globalSettings = {
       theme: "auto",
       layout: "standard",
-      tickerSpeed: DEFAULT_TICKER_S,
+      tickerSpeed: DEFAULT_TICKER_S,          // animatsiooni kestus (sek)
+      tickerIntervalS: DEFAULT_TICKER_S,      // mitu sekundit enne kui sõnum vahetub
+      tickerMessages: ["Tere tulemast Konguta rahvamajja!"],
       defaultSlideMs: DEFAULT_SLIDE_MS,
       darkFrom: "18:00",
       darkTo: "08:00",
@@ -458,10 +437,12 @@
     let audioState = {
       enabled: true,
       url: "",
-      volume: 0.15,
-      startedByUser: false
+      volume: 0.15
     };
 
+    // ---------------------------------------
+    // ABI
+    // ---------------------------------------
     function parseBool(v, defVal = true) {
       if (v === true) return true;
       if (v === false) return false;
@@ -494,7 +475,6 @@
     function cacheSave(payload) {
       try { localStorage.setItem(CACHE_KEY, JSON.stringify(payload)); } catch(e) {}
     }
-
     function cacheLoad() {
       try {
         const raw = localStorage.getItem(CACHE_KEY);
@@ -502,25 +482,21 @@
       } catch(e) { return null; }
     }
 
+    // Drive pilt: stabiilsem CDN link
     function fixLink(u) {
-  if (!u) return "";
-  u = u.replace(/"/g, "").trim();
+      if (!u) return "";
+      u = u.replace(/"/g, "").trim();
 
-  // Kui juba otse pildi link, jäta rahule
-  if (u.includes("googleusercontent.com") || u.includes("lh3.googleusercontent.com")) return u;
+      if (u.includes("googleusercontent.com") || u.includes("lh3.googleusercontent.com")) return u;
 
-  if (u.includes("drive.google.com")) {
-    let id = "";
-    if (u.includes("id=")) id = u.split("id=")[1].split("&")[0];
-    else if (u.includes("/d/")) id = u.split("/d/")[1].split("/")[0];
-
-    if (!id) return ""; // kaustalink vms
-
-    // Otse pildi CDN link (stabiilsem kui uc?export=view)
-    return "https://lh3.googleusercontent.com/d/" + id;
-  }
-
-  return u;
+      if (u.includes("drive.google.com")) {
+        let id = "";
+        if (u.includes("id=")) id = u.split("id=")[1].split("&")[0];
+        else if (u.includes("/d/")) id = u.split("/d/")[1].split("/")[0];
+        if (!id) return "";
+        return "https://lh3.googleusercontent.com/d/" + id;
+      }
+      return u;
     }
 
     function setStatus(txt) {
@@ -534,6 +510,9 @@
       setStatus(`Uuendatud: ${hhmm} • ${slides.length} slaidi • ${source}`);
     }
 
+    // ---------------------------------------
+    // LAYOUT + TEEMA
+    // ---------------------------------------
     function applyLayout(mode) {
       const m = (mode || "standard").toLowerCase();
       const left = document.getElementById("vasak-paneel");
@@ -585,14 +564,15 @@
       let useDark = false;
       if (m === "tume") useDark = true;
       if (m === "hele") useDark = false;
-      if (m === "auto") {
-        useDark = isInAutoDarkWindow(now, globalSettings.darkFrom, globalSettings.darkTo);
-      }
+      if (m === "auto") useDark = isInAutoDarkWindow(now, globalSettings.darkFrom, globalSettings.darkTo);
 
       if (useDark) document.documentElement.setAttribute("data-theme", "dark");
       else document.documentElement.removeAttribute("data-theme");
     }
 
+    // ---------------------------------------
+    // TICKER: päris loop
+    // ---------------------------------------
     function setTickerSpeed(seconds) {
       const t = document.getElementById("jooksev-tekst");
       if (!t) return;
@@ -602,7 +582,45 @@
       t.style.animation = `veeremine ${s}s linear infinite`;
     }
 
+    function setTickerText(text) {
+      const t = document.getElementById("jooksev-tekst");
+      if (!t) return;
+      t.innerText = text || "";
+      // restart animation for clean start
+      t.style.animation = "none";
+      t.offsetHeight;
+      const s = Math.max(20, Number(globalSettings.tickerSpeed) || DEFAULT_TICKER_S);
+      t.style.animation = `veeremine ${s}s linear infinite`;
+    }
+
+    function stopTickerLoop() {
+      if (tickerTimer) clearInterval(tickerTimer);
+      tickerTimer = null;
+    }
+
+    function startTickerLoop() {
+      stopTickerLoop();
+
+      const msgs = Array.isArray(globalSettings.tickerMessages) ? globalSettings.tickerMessages : [];
+      const clean = msgs.map(x => String(x || "").trim()).filter(Boolean);
+
+      globalSettings.tickerMessages = clean.length ? clean : ["Tere tulemast Konguta rahvamajja!"];
+      tickerIndex = 0;
+
+      setTickerSpeed(globalSettings.tickerSpeed);
+      setTickerText(globalSettings.tickerMessages[0]);
+
+      const intervalS = Math.max(10, Number(globalSettings.tickerIntervalS) || globalSettings.tickerSpeed || DEFAULT_TICKER_S);
+
+      tickerTimer = setInterval(() => {
+        tickerIndex = (tickerIndex + 1) % globalSettings.tickerMessages.length;
+        setTickerText(globalSettings.tickerMessages[tickerIndex]);
+      }, intervalS * 1000);
+    }
+
+    // ---------------------------------------
     // AUDIO
+    // ---------------------------------------
     function tryStartAudio() {
       const audio = document.getElementById("taustamuusika");
       if (!audio) return;
@@ -649,7 +667,6 @@
     }
 
     function startAudio() {
-      audioState.startedByUser = true;
       tryStartAudio();
       const ov = document.getElementById("heli-overlay");
       if (ov) ov.style.display = "none";
@@ -660,7 +677,9 @@
       if (ov && ov.style.display === "flex") startAudio();
     });
 
+    // ---------------------------------------
     // KELL + ILM
+    // ---------------------------------------
     function updateTime() {
       const n = new Date();
       const kellEl = document.getElementById("kell");
@@ -683,7 +702,9 @@
         });
     }
 
+    // ---------------------------------------
     // QR
+    // ---------------------------------------
     function initQR() {
       try {
         const el = document.getElementById("qrcode");
@@ -695,7 +716,9 @@
       } catch(e) {}
     }
 
+    // ---------------------------------------
     // SETTINGS
+    // ---------------------------------------
     function applySettingsFromRows(rows) {
       const map = {};
       for (const r of rows || []) {
@@ -706,7 +729,13 @@
 
       globalSettings.theme = (map.theme || globalSettings.theme).trim();
       globalSettings.layout = (map.layout || globalSettings.layout).trim();
-      globalSettings.tickerSpeed = Number(map.ticker_speed) || globalSettings.tickerSpeed;
+
+      const speed = Number(map.ticker_speed);
+      if (Number.isFinite(speed) && speed > 0) globalSettings.tickerSpeed = speed;
+
+      const interval = Number(map.ticker_interval_s);
+      if (Number.isFinite(interval) && interval > 0) globalSettings.tickerIntervalS = interval;
+      else globalSettings.tickerIntervalS = globalSettings.tickerSpeed;
 
       const defS = Number(map.default_duration_s);
       if (Number.isFinite(defS) && defS > 0) globalSettings.defaultSlideMs = Math.max(5000, defS * 1000);
@@ -714,36 +743,47 @@
       globalSettings.darkFrom = (map.dark_from || globalSettings.darkFrom).trim();
       globalSettings.darkTo = (map.dark_to || globalSettings.darkTo).trim();
 
+      // ticker messages: eralda | märgiga
+      // näide: Teade 1 | Teade 2 | Teade 3
+      const msgRaw = (map.ticker_messages || "").trim();
+      if (msgRaw) {
+        globalSettings.tickerMessages = msgRaw.split("|").map(s => s.trim()).filter(Boolean);
+      } else {
+        // fallback: üks tekst
+        const one = (map.ticker_text || "").trim();
+        globalSettings.tickerMessages = one ? [one] : globalSettings.tickerMessages;
+      }
+
       globalSettings.audioEnabled = parseBool(map.audio_enabled, true);
       globalSettings.audioUrl = (map.audio_url || globalSettings.audioUrl || "").trim();
       globalSettings.audioVolume = clamp01(map.audio_volume, globalSettings.audioVolume);
 
       applyLayout(globalSettings.layout);
       applyTheme(globalSettings.theme);
-      setTickerSpeed(globalSettings.tickerSpeed);
 
       audioState.enabled = globalSettings.audioEnabled;
       audioState.url = globalSettings.audioUrl;
       audioState.volume = globalSettings.audioVolume;
       applyAudioSettings();
+
+      // käivita ticker loop uuesti (võib olla muutunud)
+      startTickerLoop();
     }
 
     function loadSettings(done) {
       if (typeof Papa === "undefined") return done();
-
       Papa.parse(settingsCsvUrl + "&t=" + Date.now(), {
         download: true,
         header: false,
         skipEmptyLines: true,
-        complete: (res) => {
-          applySettingsFromRows(res.data);
-          done();
-        },
+        complete: (res) => { applySettingsFromRows(res.data); done(); },
         error: () => done()
       });
     }
 
+    // ---------------------------------------
     // SLIDES
+    // ---------------------------------------
     function buildSlidesFromRows(rows) {
       const now = new Date();
       const next = [];
@@ -761,7 +801,6 @@
 
         const meta = (c[1] || "").toString().trim();
         const desc = (c[2] || "").toString().trim();
-        const ticker = (c[3] || "").toString().trim();
         const qr = (c[4] || "").toString().trim();
 
         const kestusS = Number(c[5]) || 0;
@@ -779,7 +818,6 @@
           img: imgLink,
           meta,
           desc,
-          ticker,
           qr,
           qrLabel,
           ms: kestusS > 0 ? Math.max(5000, kestusS * 1000) : globalSettings.defaultSlideMs
@@ -811,8 +849,8 @@
           const nextSlides = buildSlidesFromRows(res.data);
 
           if (nextSlides.length) {
-            const oldSig = JSON.stringify(slides.map(s => ({ img: s.img, meta: s.meta, desc: s.desc, ticker: s.ticker, qr: s.qr, ms: s.ms, qrLabel: s.qrLabel })));
-            const newSig = JSON.stringify(nextSlides.map(s => ({ img: s.img, meta: s.meta, desc: s.desc, ticker: s.ticker, qr: s.qr, ms: s.ms, qrLabel: s.qrLabel })));
+            const oldSig = JSON.stringify(slides.map(s => ({ img: s.img, meta: s.meta, desc: s.desc, qr: s.qr, ms: s.ms, qrLabel: s.qrLabel })));
+            const newSig = JSON.stringify(nextSlides.map(s => ({ img: s.img, meta: s.meta, desc: s.desc, qr: s.qr, ms: s.ms, qrLabel: s.qrLabel })));
 
             slides = nextSlides;
             cacheSave({ slides, settings: globalSettings, savedAt: Date.now() });
@@ -836,6 +874,7 @@
             markUpdated("Offline");
             return;
           }
+
           loadMockData();
         },
         error: () => {
@@ -856,7 +895,9 @@
       loadSettings(() => loadSlides());
     }
 
-    // RENDER + TIMER
+    // ---------------------------------------
+    // SLIDE RENDER + TIMER
+    // ---------------------------------------
     function initSlides() {
       const cont = document.getElementById("kesk-paneel");
       const old = document.querySelectorAll(".slaid");
@@ -879,9 +920,9 @@
         cont.insertBefore(d, prog);
       });
 
-      if (timer) clearTimeout(timer);
+      if (slideTimer) clearTimeout(slideTimer);
       currentIdx = 0;
-      scheduleNext();
+      scheduleNextSlide();
     }
 
     function startProgress(ms) {
@@ -895,20 +936,20 @@
       }, 50);
     }
 
-    function scheduleNext() {
+    function scheduleNextSlide() {
       if (!slides.length) return;
 
       const ms = slides[currentIdx] ? slides[currentIdx].ms : globalSettings.defaultSlideMs;
       startProgress(ms);
 
-      timer = setTimeout(() => {
+      slideTimer = setTimeout(() => {
         currentIdx = (currentIdx + 1) % slides.length;
 
         const nodes = document.querySelectorAll(".slaid");
         nodes.forEach((n, i) => n.className = "slaid" + (i === currentIdx ? " aktiivne" : ""));
 
         updateDisplay(currentIdx);
-        scheduleNext();
+        scheduleNextSlide();
       }, ms);
     }
 
@@ -920,13 +961,9 @@
       const tBox = document.getElementById("sisu-tekst");
       tBox.innerText = s.desc || "";
 
-      applyLayout(globalSettings.layout);
-      applyTheme(globalSettings.theme);
-
       // kirjeldus scroll
       tBox.style.transition = "none";
       tBox.style.transform = "translateY(0)";
-
       setTimeout(() => {
         const hC = document.getElementById("sisu-konteiner").offsetHeight;
         const hT = tBox.scrollHeight;
@@ -937,12 +974,6 @@
           }, 1200);
         }
       }, 80);
-
-      // ticker
-      const tTicker = document.getElementById("jooksev-tekst");
-      const txt = s.ticker || "Tere tulemast Konguta rahvamajja!";
-      if (tTicker.innerText !== txt) tTicker.innerText = txt;
-      setTickerSpeed(globalSettings.tickerSpeed);
 
       // QR
       const qrBox = document.getElementById("qr-box");
@@ -973,7 +1004,6 @@
         img: "",
         meta: "Andmete laadimine...",
         desc: "Kontrollin ühendust Google Sheetsiga...",
-        ticker: "Palun kontrolli internetiühendust.",
         qr: "",
         qrLabel: "INFO",
         ms: globalSettings.defaultSlideMs
@@ -983,6 +1013,9 @@
       markUpdated("Offline");
     }
 
+    // ---------------------------------------
+    // INIT
+    // ---------------------------------------
     function initSystem() {
       initQR();
 
@@ -996,15 +1029,20 @@
       const cached = cacheLoad();
       if (cached && cached.settings) {
         Object.assign(globalSettings, cached.settings);
+
         applyLayout(globalSettings.layout);
         applyTheme(globalSettings.theme);
-        setTickerSpeed(globalSettings.tickerSpeed);
 
         audioState.enabled = globalSettings.audioEnabled;
         audioState.url = globalSettings.audioUrl;
         audioState.volume = globalSettings.audioVolume;
         applyAudioSettings();
+
+        startTickerLoop();
+      } else {
+        startTickerLoop();
       }
+
       if (cached && cached.slides && cached.slides.length) {
         slides = cached.slides;
         initSlides();
